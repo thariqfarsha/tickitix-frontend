@@ -1,0 +1,22 @@
+.movie-card-wrapper,
+.month-wrapper {
+  white-space: nowrap;
+  overflow-x: scroll;
+}
+
+.movie-card-wrapper::-webkit-scrollbar,
+.month-wrapper::-webkit-scrollbar {
+  display: none;
+}
+
+.movie-card-wrapper .card {
+  width: 14rem;
+  margin-right: 20px;
+}
+
+@media (max-width: 578px) {
+  .movie-card-wrapper .card {
+    width: 10rem;
+    margin-right: 16px;
+  }
+} ;

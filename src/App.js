@@ -7,6 +7,8 @@ import Home from "./pages/Home";
 import SignIn from "./pages/Signin";
 import SignUp from "./pages/Signup";
 import Order from "./pages/Order";
+import Payment from "./pages/Payment";
+import MovieDetails from "./pages/MovieDetails";
 
 function App() {
   return (
@@ -19,7 +21,9 @@ function App() {
         <Route path="/" element={<Home />} />
         <Route path="signin" element={<SignIn />} />
         <Route path="signup" element={<SignUp />} />
+        <Route path="detail/:id" element={<MovieDetails />} />
         <Route path="order" element={<Order />} />
+        <Route path="payment" element={<Payment />} />
       </Routes>
     </BrowserRouter>
   );

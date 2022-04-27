@@ -1,0 +1,15 @@
+.seats {
+  width: 420px;
+}
+
+.seats .form-check-input:disabled[type="checkbox"] {
+  background-color: #262630;
+}
+
+.seats .form-check-input:checked[type="checkbox"] {
+  background-image: none;
+}
+
+.seats .form-check-input:hover[type="checkbox"] {
+  cursor: pointer;
+}

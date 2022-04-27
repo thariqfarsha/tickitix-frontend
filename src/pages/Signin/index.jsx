@@ -22,17 +22,14 @@ function SignIn() {
       e.preventDefault();
 
       const resultLogin = await axios.post("auth/login", form);
-      // const resultUser = await axios.get(`user/id/${resultLogin.data.data.id}`);
-      const resultUser = [
-        {
-          id: 1,
-          name: "Bagus"
-        }
-      ];
       localStorage.setItem("token", resultLogin.data.data.token);
       localStorage.setItem("refreshToken", resultLogin.data.data.refreshToken);
-      localStorage.setItem("dataUser", JSON.stringify(resultUser[0]));
 
+      const resultUser = await axios.get(`user/${resultLogin.data.data.id}`);
+      console.log(resultUser);
+      localStorage.setItem("dataUser", JSON.stringify(resultUser.data.data[0]));
+
+      setIsError(false);
       setMessage(resultLogin.data.msg);
       setTimeout(() => {
         navigate("/");
@@ -61,11 +58,11 @@ function SignIn() {
               <img src={require("../../assets/img/logo/logo-nav.png")} alt="logo tickitz" />
             </div>
             {!message ? null : isError ? (
-              <div className="alert alert-danger" role="alert">
+              <div className="alert alert-danger py-2" role="alert">
                 {message}
               </div>
             ) : (
-              <div className="alert alert-success" role="alert">
+              <div className="alert alert-success py-2" role="alert">
                 {message}
               </div>
             )}

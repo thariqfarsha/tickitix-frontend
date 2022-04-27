@@ -4,7 +4,7 @@ import "./index.css";
 
 function Footer() {
   return (
-    <footer className="container-fluid bg-white px-3 px-lg-0 pt-5">
+    <footer className="container-fluid bg-white px-0 px-lg-0 pt-5">
       <div className="container-lg row mb-3 mb-sm-5 mx-auto">
         <div className="col-lg-4 col-sm-12 mb-4 mb-sm-5">
           <img
@@ -33,7 +33,7 @@ function Footer() {
             </li>
           </ul>
         </div>
-        <div className="col-lg-3 col-sm-4 mb-4 cinema-logo">
+        <div className="col-lg-3 col-sm-4 mb-5 cinema-logo">
           <h4 className="text-sm bold mb-3 mb-sm-4">Our Sponsors</h4>
           <img
             src={require("../../assets/img/logo/cinema/ebv.id.png")}
@@ -41,7 +41,7 @@ function Footer() {
             className="d-sm-block mb-sm-4"
           />
           <img
-            src={require("../../assets/img/logo/cinema/cineone21.png")}
+            src={require("../../assets/img/logo/cinema/cineOne21.png")}
             alt="logo cineone21"
             className="d-sm-block mb-sm-4"
           />
@@ -81,7 +81,7 @@ function Footer() {
           </ul>
         </div>
       </div>
-      <p className="text-xs text-center color-body">&copy; 2022 Tickitz. All Rights Reserved.</p>
+      <p className="text-center text-secondary fs-7">&copy; 2022 Tickitz. All Rights Reserved.</p>
     </footer>
   );
 }

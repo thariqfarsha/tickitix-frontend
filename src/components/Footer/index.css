@@ -1,3 +1,18 @@
 footer .link-secondary:hover {
   color: var(--bs-primary);
 }
+
+.footer-subsection {
+  margin-bottom: 32px;
+}
+footer .cinema-logo img {
+  height: 20px;
+  margin-bottom: 0;
+  margin-right: 8px;
+}
+
+@media (max-width: 576px) {
+  .logo-footer {
+    width: 40%;
+  }
+}

@@ -1,0 +1,8 @@
+.schedule-card__time:not(:disabled) {
+  color: var(--bs-secondary);
+}
+
+.schedule-card__time:not(:disabled):hover {
+  color: var(--bs-primary);
+  font-weight: 700;
+}

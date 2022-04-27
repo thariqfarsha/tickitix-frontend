@@ -12,7 +12,7 @@ code {
 }
 
 main {
-  padding-top: 72px;
+  padding-top: 80px;
 }
 
 .signin-banner,
@@ -60,3 +60,25 @@ main {
 .pagination > li:last-child > span {
   border-radius: unset;
 }
+
+.fw-semibold {
+  font-weight: 600;
+}
+.fs-7 {
+  font-size: 14px;
+}
+.text-body {
+  color: #4f4b68 !important;
+}
+.bg-primary-light {
+  background-color: #f5f6f8;
+}
+.bg-primary-dark {
+  background-color: #d6d7e6;
+}
+
+@media (max-width: 576px) {
+  main {
+    padding-top: 60px;
+  }
+} ;

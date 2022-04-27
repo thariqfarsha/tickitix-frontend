@@ -5,18 +5,6 @@ $warning: #f4b73e;
 
 $input-btn-padding-y: 0.8rem;
 $border-radius: 0.75rem;
-
-@import "../../node_modules/bootstrap/scss/functions";
-@import "../../node_modules/bootstrap/scss/variables";
-
-$custom-colors: (
-  "primary-light": #f6f7f9,
-  "primary-altlight": #d6d7e6,
-  "placeholder": #9fa2bc,
-  "body": #4f4c67,
-  "label": #6e7191
-);
-
-$theme-colors: map-merge($theme-colors, $custom-colors);
+$btn-disabled-opacity: 0.4;
 
 @import "../../node_modules/bootstrap/scss/bootstrap";

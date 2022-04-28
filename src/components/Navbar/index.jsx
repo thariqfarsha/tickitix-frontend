@@ -2,6 +2,8 @@ import React from "react";
 import { Link } from "react-router-dom";
 
 function Navbar() {
+  const dataUser = JSON.parse(localStorage.getItem("dataUser"));
+
   return (
     <nav className="navbar navbar-expand-md navbar-light bg-white fixed-top text-center shadow-sm px-3 px-lg-0">
       <div className="container-lg">
@@ -39,9 +41,26 @@ function Navbar() {
             </li>
             <hr className="my-1" />
           </ul>
-          <Link to="/signin" className="btn btn-primary py-2" role="button">
+          <Link
+            to="/signin"
+            className={`btn btn-primary py-2 ${dataUser ? "d-none" : "d-block"}`}
+            role="button"
+          >
             Sign in
           </Link>
+          <div className={`user-only ${dataUser ? "d-flex" : "d-none"} align-items-center`}>
+            <div>
+              <i className="bi bi-search"></i>
+            </div>
+            <div className="profilePicture">
+              <img
+                src={dataUser ? dataUser.imagePath : ""}
+                alt="profile"
+                className="rounded-circle ms-5"
+                style={{ width: "44px" }}
+              />
+            </div>
+          </div>
         </div>
       </div>
     </nav>

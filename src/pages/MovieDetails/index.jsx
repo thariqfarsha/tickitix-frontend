@@ -1,32 +1,61 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import Footer from "../../components/Footer";
 import Navbar from "../../components/Navbar";
 import ScheduleCard from "../../components/ScheduleCard";
+import axios from "../../utils/axios";
+import "./index.css";
 
 function MovieDetails() {
   const navigate = useNavigate();
   const params = useParams();
+  const [dataMovie, setDataMovie] = useState({});
+  const [listSchedule, setListSchedule] = useState([]);
 
-  const listSchedule = [
-    {
-      id: 1,
-      premiere: "ebv.id",
-      location: "Whatever street No.12, South Purwokerto",
-      price: 50000,
-      movieName: "Spiderman",
-      time: ["08:30am", "12:00pm"]
-    },
-    {
-      id: 2,
-      premiere: "cineOne21",
-      location: "Whatever street lah ya No.13A, East Purwokerto",
-      price: 60000,
-      movieName: "Spiderman",
-      time: ["02:00pm", "08:30pm"]
+  useEffect(() => {
+    getDataMovie();
+    getListSchedule();
+  }, []);
+
+  const getDataMovie = async () => {
+    try {
+      console.log("get data movie");
+      const resultDataMovie = await axios.get(`movie/${params.id}`);
+      setDataMovie(resultDataMovie.data.data[0]);
+    } catch (error) {
+      console.log(error.response);
     }
-  ];
+  };
 
+  // const listSchedule = [
+  //   {
+  //     id: 1,
+  //     premiere: "ebv.id",
+  //     location: "Whatever street No.12, South Purwokerto",
+  //     price: 50000,
+  //     movieName: "Spiderman",
+  //     time: ["08:30am", "12:00pm"]
+  //   },
+  //   {
+  //     id: 2,
+  //     premiere: "cineOne21",
+  //     location: "Whatever street lah ya No.13A, East Purwokerto",
+  //     price: 60000,
+  //     movieName: "Spiderman",
+  //     time: ["02:00pm", "08:30pm"]
+  //   }
+  // ];
+
+  const getListSchedule = async () => {
+    try {
+      console.log("get list movie");
+      const resultListSchedule = await axios.get(`schedule?movieId=${params.id}`);
+      setListSchedule(resultListSchedule.data.data);
+    } catch (error) {
+      console.log(error.response);
+    }
+  };
+  console.log(listSchedule);
   const [dataOrder, setDataOrder] = useState({
     movieId: params.id,
     dateBooking: new Date().toISOString().split("T")[0]
@@ -35,7 +64,7 @@ function MovieDetails() {
   const changeDataBooking = (data) => {
     setDataOrder({ ...dataOrder, ...data });
   };
-
+  console.log(dataOrder);
   const handleBooking = () => {
     navigate("/order", { state: dataOrder });
   };
@@ -50,46 +79,35 @@ function MovieDetails() {
             <div className="row">
               <div className="col-md-4 movie-img-side mb-4 mb-md-0 d-flex justify-content-center align-items-start">
                 <div className="card p-4">
-                  <img
-                    src={require("../../assets/img/movie/spiderman.png")}
-                    alt="spiderman"
-                    className="img-fluid"
-                  />
+                  <img src={dataMovie.imagePath} alt="spiderman" className="img-fluid" />
                 </div>
               </div>
               <div className="col-md-8 movie-details-side">
-                <h1 className="h2 fw-bold text-center text-md-start">Spider-Man: Homecoming</h1>
+                <h1 className="h2 fw-bold text-center text-md-start">{dataMovie.name}</h1>
                 <p className="text-secondary text-center text-md-start mb-4">
-                  Adventure, Action, Sci-Fi
+                  {dataMovie.category}
                 </p>
                 <div className="row">
                   <div className="details-group col-6 col-md-4 mb-4">
                     <h2 className="fs-7 text-secondary">Release date</h2>
-                    <p className="mb-0">June 28, 2017</p>
+                    <p className="mb-0">{dataMovie.releaseDate}</p>
                   </div>
                   <div className="details-group col-6 col-md-8">
                     <h2 className="fs-7 text-secondary">Directed by</h2>
-                    <p className="mb-0">Jon Watts</p>
+                    <p className="mb-0">{dataMovie.director}</p>
                   </div>
                   <div className="details-group col-6 col-md-4">
                     <h2 className="fs-7 text-secondary">Duration</h2>
-                    <p className="mb-0">2 hours 13 minutes</p>
+                    <p className="mb-0">{dataMovie.duration}</p>
                   </div>
                   <div className="details-group col-6 col-md-8">
                     <h2 className="fs-7 text-secondary">Casts</h2>
-                    <p className="mb-0">Tom Holland, Michael Keaton, Robert Downey Jr., ...</p>
+                    <p className="mb-0">{dataMovie.cast}</p>
                   </div>
                 </div>
                 <hr className="my-4" />
                 <h2 className="h4 fw-bold mb-3 mb-md-2">Synopsis</h2>
-                <p className="text-body">
-                  Thrilled by his experience with the Avengers, Peter returns home, where he lives
-                  with his Aunt May, under the watchful eye of his new mentor Tony Stark, Peter
-                  tries to fall back into his normal daily routine - distracted by thoughts of
-                  proving himself to be more than just your friendly neighborhood Spider-Man - but
-                  when the Vulture emerges as a new villain, everything that Peter holds most
-                  important will be threatened.
-                </p>
+                <p className="text-body">{dataMovie.synopsis}</p>
               </div>
             </div>
           </div>

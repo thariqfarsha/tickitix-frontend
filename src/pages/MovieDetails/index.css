@@ -1,0 +1,9 @@
+.movie-details-section img {
+  max-width: 280px;
+}
+
+@media (max-width: 576px) {
+  .movie-details-section img {
+    max-width: 200px;
+  }
+}

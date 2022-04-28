@@ -43,7 +43,7 @@ function ScheduleCard(props) {
                   props.changeDataBooking({
                     timeBooking: time,
                     scheduleId: scheduleId,
-                    movieName: listSchedule[index].movieName,
+                    movieName: listSchedule[index].name,
                     price: listSchedule[index].price,
                     premiere: listSchedule[index].premiere
                   });

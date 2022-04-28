@@ -2,14 +2,17 @@ import React from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import Footer from "../../components/Footer";
 import Navbar from "../../components/Navbar";
+import axios from "../../utils/axios";
 
 function Payment() {
   const navigate = useNavigate();
   const { state } = useLocation();
+  const dataUser = JSON.parse(localStorage.getItem("dataUser"));
   console.log(state);
-
-  const handlePayment = (dataPayment) => {
-    console.log(dataPayment);
+  const handlePayment = async (dataPayment) => {
+    const resultPayment = await axios.post("booking", JSON.stringify(dataPayment));
+    console.log(JSON.stringify(dataPayment));
+    console.log(resultPayment);
   };
 
   return (
@@ -41,7 +44,7 @@ function Payment() {
                     <li className="list-group-item py-3 d-block d-md-flex justify-content-between align-items-center">
                       <span className="d-block text-secondary">Number of tickets</span>
                       <span className="d-block text-md-end fw-semibold">
-                        {state.seatBooking.length} pieces
+                        {state.seats.length} pieces
                       </span>
                     </li>
                     <li className="list-group-item py-3 d-block d-md-flex justify-content-between align-items-center">
@@ -81,6 +84,8 @@ function Payment() {
                       className="form-control"
                       id="full-name"
                       placeholder="Full name"
+                      value={dataUser.firstName + " " + dataUser.lastName}
+                      disabled={dataUser ? true : false}
                     />
                   </div>
                   <div className="mb-3">
@@ -105,6 +110,8 @@ function Payment() {
                       className="form-control"
                       id="phone-number"
                       placeholder="08XXXXXXXXXX"
+                      value={dataUser.noTelp}
+                      disabled={dataUser ? true : false}
                     />
                   </div>
                   {/* <div className="alert alert-warning mt-4 mb-0" role="alert">

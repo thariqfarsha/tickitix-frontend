@@ -1,13 +1,38 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import Card from "../../components/Card";
 import Footer from "../../components/Footer";
 import MonthFilter from "../../components/MonthFilter";
 import Navbar from "../../components/Navbar";
+import axios from "../../utils/axios";
 import "./index.css";
 
 function Home() {
   document.title = "Tickitix | Home";
+
+  const limit = 6;
+  const [page, setPage] = useState(1);
+  const [dataNowShowingMovie, setDataNowShowingMovie] = useState([]);
+
+  useEffect(() => {
+    getNowShowingMovie();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  const getNowShowingMovie = async () => {
+    try {
+      console.log("get now showing movie");
+      const resultNowShowingMovie = await axios.get(
+        `movie?page=${page}&limit=${limit}&searchRelease=${new Date().getMonth() + 1}`
+      );
+      console.log(resultNowShowingMovie);
+      setDataNowShowingMovie(resultNowShowingMovie.data.data);
+    } catch (error) {
+      console.log(error.response);
+    }
+  };
+
+  console.log("now showing", dataNowShowingMovie);
 
   return (
     <>
@@ -42,13 +67,11 @@ function Home() {
             </Link>
           </div>
           <div className="container-lg movie-card-wrapper">
-            <Card />
-            <Card />
-            <Card />
-            <Card />
-            <Card />
-            <Card />
-            <Card />
+            {dataNowShowingMovie.map((movie) => (
+              <div key={movie.id} className="d-inline-block">
+                <Card data={movie} />
+              </div>
+            ))}
           </div>
         </section>
 
@@ -61,14 +84,11 @@ function Home() {
           </div>
           <MonthFilter />
           <div className="container-lg movie-card-wrapper">
-            <Card />
-            <Card />
-            <Card />
-            <Card />
-            <Card />
-            <Card />
-            <Card />
-            <Card />
+            {dataNowShowingMovie.map((movie) => (
+              <div key={movie.id} className="d-inline-block">
+                <Card data={movie} />
+              </div>
+            ))}
           </div>
         </section>
 

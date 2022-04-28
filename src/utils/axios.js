@@ -1,7 +1,7 @@
 import axios from "axios";
 
 const axiosApiInstance = axios.create({
-  baseURL: "https://tickitix.herokuapp.com/"
+  baseURL: process.env.REACT_APP_BASE_URL
 });
 
 // Add a request interceptor

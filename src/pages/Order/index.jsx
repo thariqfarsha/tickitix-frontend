@@ -24,7 +24,7 @@ function Order() {
     navigate("/payment", {
       state: {
         ...state,
-        seatBooking: selectedSeat,
+        seats: selectedSeat,
         totalPayment: state.price * selectedSeat.length
       }
     });

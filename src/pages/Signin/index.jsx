@@ -50,7 +50,7 @@ function SignIn() {
             alt="logo tickitz"
             width="40%"
           />
-          <span className="d-block display-sm text-light">wait, watch, wow!</span>
+          <span className="d-block h2 text-light">wait, watch, wow!</span>
         </div>
         <div className="signin-form col-md-5 pt-5 pt-md-0 d-md-flex justify-content-center align-items-center">
           <div className="container px-4 px-md-5">
@@ -88,36 +88,33 @@ function SignIn() {
                 <label htmlFor="password" className="form-label">
                   Password
                 </label>
-                <div className="input-group">
-                  <input
-                    type="password"
-                    id="password"
-                    className="form-control"
-                    placeholder="Enter your password"
-                    name="password"
-                    onChange={handleChangeForm}
-                  />
-                  <i className="bi bi-eye color-body input-group-text px-3" id="togglePassword"></i>
-                </div>
+                <input
+                  type="password"
+                  id="password"
+                  className="form-control"
+                  placeholder="Enter your password"
+                  name="password"
+                  onChange={handleChangeForm}
+                />
               </div>
               <button className="btn btn-md btn-primary w-100 mt-3 mb-4" type="submit">
                 Sign in
               </button>
-              <span className="d-block text-xs text-center color-body mb-1">
-                Forgot your password?
-                <Link to="#" className="link-primary text-decoration-none">
-                  {" "}
-                  Reset now
-                </Link>
-              </span>
-              <span className="d-block text-xs text-center color-body">
-                Don't have an account?
-                <Link to="/signup" className="link-primary text-decoration-none">
-                  {" "}
-                  Sign up
-                </Link>
-              </span>
             </form>
+            <span className="d-block text-xs text-center color-body mb-1">
+              Forgot your password?
+              <Link to="#" className="link-primary text-decoration-none">
+                {" "}
+                Reset now
+              </Link>
+            </span>
+            <span className="d-block text-xs text-center color-body">
+              Don't have an account?
+              <Link to="/signup" className="link-primary text-decoration-none">
+                {" "}
+                Sign up
+              </Link>
+            </span>
           </div>
         </div>
       </div>

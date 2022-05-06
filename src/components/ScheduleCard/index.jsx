@@ -16,14 +16,14 @@ function ScheduleCard(props) {
     <div className="card schedule-card shadow-sm">
       <div className="card-header bg-white py-4">
         <div className="row">
-          <div className="col-5 d-flex justify-content-center align-items-center">
+          <div className="col-6 d-flex justify-content-center align-items-center">
             <img
               src={require(`../../assets/img/logo/cinema/${premiere}.png`)}
               alt={`${premiere}`}
               className="img-fluid"
             />
           </div>
-          <div className="col-7">
+          <div className="col-6">
             <h3 className="h4 fw-semibold">{premiere}</h3>
             <p className="fs-7 text-secondary mb-0">{textTruncate(location)}</p>
           </div>

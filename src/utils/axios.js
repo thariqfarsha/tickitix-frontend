@@ -27,11 +27,18 @@ axiosApiInstance.interceptors.response.use(
     return response;
   },
   function (error) {
-    if (error.response.status === 403) {
-      alert(error.response.data.msg);
-      localStorage.clear();
-      window.location.href("/login");
-    }
+    const refreshToken = localStorage.getItem("refreshToken");
+    axiosApiInstance
+      .post("auth/refresh", { refreshToken })
+      .then((res) => {
+        localStorage.setItem("token", res.data.data.token);
+        localStorage.setItem("refreshToken", res.data.data.refreshToken);
+        window.location.reload();
+      })
+      .catch(() => {
+        localStorage.clear();
+        window.location.href = "/basic/login";
+      });
     // Any status codes that falls outside the range of 2xx cause this function to trigger
     // Do something with response error
     return Promise.reject(error);

@@ -66,22 +66,18 @@ function ManageMovie() {
                       </label>
                       <input type="text" className="form-control" id="casts" />
                     </div>
-                    <div className="row">
+                    <div className="row mb-4">
                       <div className="col-6">
-                        <div className="mb-4">
-                          <label htmlFor="duration-hour" className="form-label">
-                            Duration Hour
-                          </label>
-                          <input type="number" className="form-control" id="duration-hour" />
-                        </div>
+                        <label htmlFor="duration-hour" className="form-label">
+                          Duration Hour
+                        </label>
+                        <input type="number" className="form-control" id="duration-hour" />
                       </div>
                       <div className="col-6">
-                        <div className="mb-4">
-                          <label htmlFor="duration-minute" className="form-label">
-                            Duration Minute
-                          </label>
-                          <input type="number" className="form-control" id="duration-minute" />
-                        </div>
+                        <label htmlFor="duration-minute" className="form-label">
+                          Duration Minute
+                        </label>
+                        <input type="number" className="form-control" id="duration-minute" />
                       </div>
                     </div>
                   </div>

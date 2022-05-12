@@ -2,7 +2,6 @@ import React from "react";
 import { Link } from "react-router-dom";
 
 function Card(props) {
-  console.log("props", props.data);
   return (
     <div className="movie-card card d-inline-block text-center p-3 p-md-4">
       <img
@@ -18,7 +17,7 @@ function Card(props) {
           {props.data ? props.data.category : "Movie Category"}
         </p>
         <Link
-          to={`detail/${props.data ? props.data.id : ""}`}
+          to={`/detail/${props.data ? props.data.id : ""}`}
           className="btn btn-outline-primary py-1 w-100"
         >
           Details

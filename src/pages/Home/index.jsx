@@ -16,23 +16,18 @@ function Home() {
 
   useEffect(() => {
     getNowShowingMovie();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const getNowShowingMovie = async () => {
     try {
-      console.log("get now showing movie");
       const resultNowShowingMovie = await axios.get(
-        `movie?page=${page}&limit=${limit}&searchRelease=${new Date().getMonth() + 1}`
+        `movie?page=${page}&limit=${limit}&searchRelease=${new Date().getMonth()}`
       );
-      console.log(resultNowShowingMovie);
       setDataNowShowingMovie(resultNowShowingMovie.data.data);
     } catch (error) {
       console.log(error.response);
     }
   };
-
-  console.log("now showing", dataNowShowingMovie);
 
   return (
     <>

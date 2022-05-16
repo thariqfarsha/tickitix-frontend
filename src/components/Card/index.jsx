@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 
 function Card(props) {
   return (
-    <div className="movie-card card d-inline-block text-center p-3 p-md-4">
+    <div className="movie-card card d-inline-block text-center p-3 p-md-4 h-100">
       <img
         src={props.data ? props.data.imagePath : "https://via.placeholder.com/300x400.png?text=+"}
         className="card-img-top rounded"
@@ -16,12 +16,29 @@ function Card(props) {
         <p className="card-text text-dark text-opacity-50 pb-3">
           {props.data ? props.data.category : "Movie Category"}
         </p>
-        <Link
-          to={`/detail/${props.data ? props.data.id : ""}`}
-          className="btn btn-outline-primary py-1 w-100"
-        >
-          Details
-        </Link>
+        {props.pathname === "/manage-movie" ? (
+          <div>
+            <button
+              className="btn btn-outline-primary py-2 w-100 mb-3"
+              onClick={() => props.setUpdate(props.data)}
+            >
+              Update
+            </button>
+            <button
+              className="btn btn-outline-danger py-2 w-100"
+              onClick={() => props.handleDelete(props.data.id)}
+            >
+              Delete
+            </button>
+          </div>
+        ) : (
+          <Link
+            to={`/detail/${props.data ? props.data.id : ""}`}
+            className="btn btn-outline-primary py-1 w-100"
+          >
+            Details
+          </Link>
+        )}
       </div>
     </div>
   );

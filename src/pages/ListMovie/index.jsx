@@ -11,6 +11,7 @@ function ListMovie() {
   const dispatch = useDispatch();
   const movies = useSelector((state) => state.movie);
   const [page, setPage] = useState(1);
+  const limit = 8;
 
   useEffect(() => {
     getDataMovie();
@@ -22,7 +23,7 @@ function ListMovie() {
 
   const getDataMovie = async () => {
     try {
-      dispatch(getDataMovieRedux(page));
+      dispatch(getDataMovieRedux(page, limit));
     } catch (error) {
       console.log(error.response);
     }

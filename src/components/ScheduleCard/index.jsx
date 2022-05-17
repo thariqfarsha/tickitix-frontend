@@ -6,6 +6,7 @@ function ScheduleCard(props) {
   const { id: scheduleId, premiere, location, price, time: timeBooking } = props.data;
   const index = props.index;
   const listSchedule = props.listSchedule;
+  const pathname = props.pathname;
   const showTimes = ["08:30am", "10:30am", "12:00pm", "02:00pm", "04:30pm", "07:00pm", "08:30pm"];
 
   const textTruncate = (str, length = 45, ending = "...") => {
@@ -33,25 +34,33 @@ function ScheduleCard(props) {
         <div className="row gy-3">
           {showTimes.map((time) => (
             <div className="col-3 text-center" key={time}>
-              <button
-                className={`schedule-card__time bg-transparent fs-7 fw-semibold ${
-                  selectedTime === time ? "text-primary fw-bold" : ""
-                }`}
-                style={{ border: "none" }}
-                disabled={timeBooking.includes(time) ? false : true}
-                onClick={() => {
-                  props.changeDataBooking({
-                    timeBooking: time,
-                    scheduleId: scheduleId,
-                    movieName: listSchedule[index].name,
-                    price: listSchedule[index].price,
-                    premiere: listSchedule[index].premiere
-                  });
-                  setSelectedTime(time);
-                }}
-              >
-                {time}
-              </button>
+              {pathname === "/manage-schedule" ? (
+                <button
+                  className="schedule-card__time bg-transparent fs-7 fw-semibold border-0"
+                  disabled={timeBooking.includes(time) ? false : true}
+                >
+                  {time}
+                </button>
+              ) : (
+                <button
+                  className={`schedule-card__time bg-transparent fs-7 fw-semibold border-0 ${
+                    selectedTime === time ? "text-primary fw-bold" : ""
+                  }`}
+                  disabled={timeBooking.includes(time) ? false : true}
+                  onClick={() => {
+                    props.changeDataBooking({
+                      timeBooking: time,
+                      scheduleId: scheduleId,
+                      movieName: listSchedule[index].name,
+                      price: listSchedule[index].price,
+                      premiere: listSchedule[index].premiere
+                    });
+                    setSelectedTime(time);
+                  }}
+                >
+                  {time}
+                </button>
+              )}
             </div>
           ))}
         </div>
@@ -61,15 +70,30 @@ function ScheduleCard(props) {
           <p className="text-secondary">Price</p>
           <p className="fw-semibold">Rp {price} /seat</p>
         </div>
-        <div className="d-grid">
+        {props.pathname === "/manage-schedule" ? (
+          <div>
+            <button
+              className="btn btn-outline-primary py-2 w-100 mb-3"
+              onClick={() => props.setUpdate(props.data)}
+            >
+              Update
+            </button>
+            <button
+              className="btn btn-outline-danger py-2 w-100"
+              onClick={() => props.handleDelete(props.data.scheduleId)}
+            >
+              Delete
+            </button>
+          </div>
+        ) : (
           <button
-            className="btn btn-primary shadow py-2"
+            className="btn btn-primary shadow py-2 w-100"
             disabled={scheduleId === props.dataOrder.scheduleId ? false : true}
             onClick={props.handleBooking}
           >
             Book now
           </button>
-        </div>
+        )}
       </div>
     </div>
   );

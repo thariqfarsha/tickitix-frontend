@@ -19,8 +19,8 @@ function ManageMovie() {
   const movies = useSelector((state) => state.movie);
   const [page, setPage] = useState(1);
   const limit = 8;
-  const [selectedFile, setSelectedFile] = useState();
-  const [preview, setPreview] = useState();
+  const [selectedFile, setSelectedFile] = useState(null);
+  const [preview, setPreview] = useState(null);
   const [form, setForm] = useState({
     name: "",
     category: "",
@@ -33,7 +33,7 @@ function ManageMovie() {
     synopsis: "",
     image: null
   });
-  const [idMovie, setIdMovie] = useState(null);
+  const [MovieId, setMovieId] = useState(null);
   const [isUpdate, setIsUpdate] = useState(false);
 
   useEffect(() => {
@@ -111,7 +111,7 @@ function ManageMovie() {
       minute: duration === "-" ? "-" : duration.split(" ")[1].split("m")[0],
       synopsis
     });
-    setIdMovie(id);
+    setMovieId(id);
     setIsUpdate(true);
     setPreview(imagePath);
   };
@@ -123,7 +123,7 @@ function ManageMovie() {
       for (const data in form) {
         formData.append(data, form[data]);
       }
-      await dispatch(updateMovieRedux(idMovie, formData));
+      await dispatch(updateMovieRedux(MovieId, formData));
       setIsUpdate(false);
       setPreview(null);
       resetForm();
@@ -168,6 +168,7 @@ function ManageMovie() {
       synopsis: "",
       image: null
     });
+    setPreview(null);
   };
 
   return (
@@ -178,12 +179,13 @@ function ManageMovie() {
         <section className="form-movie container-lg mt-4 mb-5">
           <h2 className="h4 fw-bold mb-3">Form Movie</h2>
           <div className="card border-0 p-5">
-            <form onSubmit={isUpdate ? handleUpdate : handleSubmit}>
+            <form onSubmit={isUpdate ? handleUpdate : handleSubmit} onReset={resetForm}>
               <div className="row gx-5 mb-4">
                 <div className="col-3">
-                  <label for="formFile" class="form-label card p-4 movie-image-upload">
+                  <label htmlFor="formFile" className="form-label card p-4 movie-image-upload">
                     <img
                       src={!preview ? "https://via.placeholder.com/200x300.png?text=+" : preview}
+                      alt="movie image preview"
                     />
                     {/* <img
                       src={"https://via.placeholder.com/200x300.png?text=+"}
@@ -192,7 +194,7 @@ function ManageMovie() {
                     /> */}
                   </label>
                   <input
-                    class="form-control visually-hidden"
+                    className="form-control visually-hidden"
                     type="file"
                     id="formFile"
                     onChange={handleSelectFile}
@@ -326,12 +328,12 @@ function ManageMovie() {
               </div>
               <div className="row buttons justify-content-end">
                 <div className="col-2">
-                  <button className="btn btn-outline-primary w-100" onClick={resetForm}>
+                  <button type="reset" className="btn btn-outline-primary w-100">
                     Reset
                   </button>
                 </div>
                 <div className="col-2">
-                  <button className="btn btn-primary fw-semibold w-100">
+                  <button type="submit" className="btn btn-primary fw-semibold w-100">
                     {isUpdate ? "Update" : "Save"}
                   </button>
                 </div>

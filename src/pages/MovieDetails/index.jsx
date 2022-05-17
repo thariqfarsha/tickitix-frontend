@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
 import Footer from "../../components/Footer";
 import Navbar from "../../components/Navbar";
 import ScheduleCard from "../../components/ScheduleCard";
@@ -7,6 +7,7 @@ import axios from "../../utils/axios";
 import "./index.css";
 
 function MovieDetails() {
+  const location = useLocation();
   const navigate = useNavigate();
   const params = useParams();
   const [dataMovie, setDataMovie] = useState({});
@@ -26,25 +27,6 @@ function MovieDetails() {
       console.log(error.response);
     }
   };
-
-  // const listSchedule = [
-  //   {
-  //     id: 1,
-  //     premiere: "ebv.id",
-  //     location: "Whatever street No.12, South Purwokerto",
-  //     price: 50000,
-  //     movieName: "Spiderman",
-  //     time: ["08:30am", "12:00pm"]
-  //   },
-  //   {
-  //     id: 2,
-  //     premiere: "cineOne21",
-  //     location: "Whatever street lah ya No.13A, East Purwokerto",
-  //     price: 60000,
-  //     movieName: "Spiderman",
-  //     time: ["02:00pm", "08:30pm"]
-  //   }
-  // ];
 
   const getListSchedule = async () => {
     try {
@@ -145,6 +127,7 @@ function MovieDetails() {
                       index={index}
                       listSchedule={listSchedule}
                       dataOrder={dataOrder}
+                      pathname={location.pathname}
                       changeDataBooking={changeDataBooking}
                       handleBooking={handleBooking}
                     />

@@ -1,13 +1,15 @@
 import React from "react";
 import { Link, useNavigate, useLocation } from "react-router-dom";
+import axios from "../../utils/axios";
 
 function Navbar() {
   const location = useLocation();
   const navigate = useNavigate();
   const dataUser = JSON.parse(localStorage.getItem("dataUser"));
 
-  const handleLogout = () => {
+  const handleLogout = async () => {
     localStorage.clear();
+    await axios.post("auth/logout");
   };
 
   return (

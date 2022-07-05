@@ -3,17 +3,21 @@ import ReactDOM from "react-dom/client";
 // import "bootstrap/dist/css/bootstrap.min.css";
 import "./scss/customBootstrap.min.css";
 import "bootstrap-icons/font/bootstrap-icons.css";
+import "bootstrap/dist/js/bootstrap.bundle";
 import "./index.css";
 import App from "./App";
 import reportWebVitals from "./reportWebVitals";
 
 import { Provider } from "react-redux";
-import store from "./stores";
+import { PersistGate } from "redux-persist/integration/react";
+import Store from "./stores";
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
-  <Provider store={store}>
-    <App />
+  <Provider store={Store.store}>
+    <PersistGate loading={null} persistor={Store.persistor}>
+      <App />
+    </PersistGate>
   </Provider>
 );
 

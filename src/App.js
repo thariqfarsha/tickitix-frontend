@@ -11,6 +11,8 @@ import Payment from "./pages/Payment";
 import MovieDetails from "./pages/MovieDetails";
 import Unauthorized from "./pages/Unauthorized";
 import ListMovie from "./pages/ListMovie";
+import Ticket from "./pages/Ticket";
+import Profile from "./pages/Profile";
 
 import PrivateRoute from "./helpers/route/PrivateRoute";
 import PublicRoute from "./helpers/route/PublicRoute";
@@ -44,6 +46,8 @@ function App() {
         <Route element={<PrivateRoute isAdmin={false} />}>
           <Route path="order" element={<Order />} />
           <Route path="payment" element={<Payment />} />
+          <Route path="booking/id/:id" element={<Ticket />} />
+          <Route path="user/:id" element={<Profile />} />
         </Route>
       </Routes>
     </BrowserRouter>

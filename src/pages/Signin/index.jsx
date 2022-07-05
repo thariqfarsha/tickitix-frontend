@@ -1,9 +1,12 @@
 import React, { useState } from "react";
 import axios from "../../utils/axios";
 import { Link, useNavigate } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import { getUserById } from "../../stores/action/user";
 
 function SignIn() {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
 
   const [form, setForm] = useState({
     email: "",
@@ -12,6 +15,9 @@ function SignIn() {
 
   const [message, setMessage] = useState("");
   const [isError, setIsError] = useState(false);
+  const [isLoggingIn, setIsLoggingIn] = useState(false);
+
+  const { isLoading } = useSelector((state) => state.user);
 
   const handleChangeForm = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
@@ -21,14 +27,12 @@ function SignIn() {
     try {
       e.preventDefault();
 
-      const resultLogin = await axios.post("auth/login", form);
+      setIsLoggingIn(true);
+      const resultLogin = await axios.post("auth/login", form).then(setIsLoggingIn(false));
+      console.log(resultLogin.data.data);
       localStorage.setItem("token", resultLogin.data.data.token);
       localStorage.setItem("refreshToken", resultLogin.data.data.refreshToken);
-
-      const resultUser = await axios.get(`user/${resultLogin.data.data.id}`);
-      console.log(resultUser);
-      localStorage.setItem("dataUser", JSON.stringify(resultUser.data.data[0]));
-
+      await dispatch(getUserById(resultLogin.data.data.id));
       setIsError(false);
       setMessage(resultLogin.data.msg);
       setTimeout(() => {
@@ -55,7 +59,7 @@ function SignIn() {
         <div className="signin-form col-md-5 pt-5 pt-md-0 d-md-flex justify-content-center align-items-center">
           <div className="container px-4 px-md-5">
             <div className="d-md-none text-center mb-5">
-              <img src={require("../../assets/img/logo/logo-nav.png")} alt="logo tickitz" />
+              <img src={require("../../assets/img/logo/logo-color.png")} alt="logo tickitz" />
             </div>
             {!message ? null : isError ? (
               <div className="alert alert-danger py-2" role="alert">
@@ -98,7 +102,13 @@ function SignIn() {
                 />
               </div>
               <button className="btn btn-md btn-primary w-100 mt-3 mb-4" type="submit">
-                Sign in
+                {isLoggingIn || isLoading ? (
+                  <div class="spinner-border spinner-border-sm text-white" role="status">
+                    <span class="visually-hidden">Loading...</span>
+                  </div>
+                ) : (
+                  "Sign in"
+                )}
               </button>
             </form>
             <span className="d-block text-xs text-center color-body mb-1">

@@ -45,7 +45,7 @@ function SignUp() {
         <div className="signin-form col-md-5 pt-5 pt-md-0 d-md-flex justify-content-center align-items-center">
           <div className="container px-4 px-md-5 py-4 py-md-5">
             <div className="d-md-none text-center mb-5">
-              <img src={require("../../assets/img/logo/logo-nav.png")} alt="logo tickitz" />
+              <img src={require("../../assets/img/logo/logo-color.png")} alt="logo tickitz" />
             </div>
             {!message ? null : isError ? (
               <div className="alert alert-danger py-2" role="alert">

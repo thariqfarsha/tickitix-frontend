@@ -1,9 +1,13 @@
 import axios from "../../utils/axios";
 
-export const getDataMovieRedux = (page, limit) => {
+export const getDataMovieRedux = (page, limit, search, sort, month) => {
   return {
     type: "GET_DATA_MOVIE",
-    payload: axios.get(`movie?page=${page}&limit=${limit}&sort=createdAt%20desc`)
+    payload: axios.get(
+      `movie?page=${page}&limit=${limit}&searchName=${search}&sort=${sort}&searchRelease=${
+        month + 1
+      }`
+    )
   };
 };
 

@@ -1,25 +1,52 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import Footer from "../../components/Footer";
 import Navbar from "../../components/Navbar";
 import axios from "../../utils/axios";
+import moment from "moment/min/moment-with-locales";
+import currency from "../../utils/currency";
+import { useSelector } from "react-redux";
 
 function Payment() {
   const navigate = useNavigate();
-  const { state } = useLocation();
-  const dataUser = JSON.parse(localStorage.getItem("dataUser"));
-  console.log(state);
-  const handlePayment = async (dataPayment) => {
-    const resultPayment = await axios.post("booking", JSON.stringify(dataPayment));
-    console.log(JSON.stringify(dataPayment));
-    console.log(resultPayment);
+  const location = useLocation();
+
+  const dataUser = useSelector((state) => state.user.data);
+  const dataBooking = useSelector((state) => state.booking.data);
+
+  const formBooking = {
+    scheduleId: dataBooking.scheduleId,
+    dateBooking: dataBooking.dateBooking,
+    timeBooking: dataBooking.timeBooking,
+    paymentMethod: "",
+    seats: dataBooking.seats,
+    totalPayment: dataBooking.totalPayment
+  };
+
+  useEffect(() => {
+    if (location.search === "?status=success") {
+      window.location.href = "http://localhost:3000/booking/id/34";
+    }
+  }, []);
+
+  const handlePayment = async () => {
+    try {
+      const result = await axios.post("booking", formBooking);
+      console.log(result);
+      window.location.href = result.data.data.redirectUrl;
+      // const resultPayment = await axios.post("booking", JSON.stringify(dataPayment));
+      // console.log(JSON.stringify(dataPayment));
+      // console.log(resultPayment);
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   return (
     <>
       <Navbar />
 
-      {!state ? (
+      {Object.keys(dataBooking).length === 0 || dataBooking.totalPayment === 0 ? (
         <main className="bg-primary-light pb-4 vh-100 d-flex justify-content-center align-items-center">
           <div className="text-center">
             <h1 className="h2 fw-semibold mb-4">You have no movie selected yet</h1>
@@ -41,27 +68,32 @@ function Payment() {
                         <li className="list-group-item py-3 d-block d-md-flex justify-content-between align-items-center">
                           <span className="d-block text-secondary">Date & time</span>
                           <span className="d-block text-md-end fw-semibold">
-                            {state.dateBooking} at {state.timeBooking}
+                            {moment(dataBooking.dateBooking).locale("id").format("ddd, LL")} at{" "}
+                            {dataBooking.timeBooking}
                           </span>
                         </li>
                         <li className="list-group-item py-3 d-block d-md-flex justify-content-between align-items-center">
                           <span className="d-block text-secondary">Movie title</span>
-                          <span className="d-block text-md-end fw-semibold">{state.movieName}</span>
+                          <span className="d-block text-md-end fw-semibold">
+                            {dataBooking.movieName}
+                          </span>
                         </li>
                         <li className="list-group-item py-3 d-block d-md-flex justify-content-between align-items-center">
                           <span className="d-block text-secondary">Cinema</span>
-                          <span className="d-block text-md-end fw-semibold">{state.premiere}</span>
+                          <span className="d-block text-md-end fw-semibold">
+                            {dataBooking.premiere}
+                          </span>
                         </li>
                         <li className="list-group-item py-3 d-block d-md-flex justify-content-between align-items-center">
                           <span className="d-block text-secondary">Number of tickets</span>
                           <span className="d-block text-md-end fw-semibold">
-                            {state.seats.length} pieces
+                            {dataBooking.seats.length} pieces
                           </span>
                         </li>
                         <li className="list-group-item py-3 d-block d-md-flex justify-content-between align-items-center">
                           <span className="d-block text-secondary">Total Payment</span>
                           <span className="d-block text-md-end fw-semibold">
-                            Rp {state.totalPayment}
+                            {currency.format(dataBooking.totalPayment)}
                           </span>
                         </li>
                       </ul>
@@ -76,7 +108,7 @@ function Payment() {
                     </button>
                     <button
                       className="checkout-btn btn btn-primary py-2 fw-bold shadow"
-                      onClick={() => handlePayment({ ...state })}
+                      onClick={() => handlePayment({ ...dataBooking })}
                     >
                       Proceed to Pay
                     </button>
@@ -125,17 +157,13 @@ function Payment() {
                           disabled={dataUser ? true : false}
                         />
                       </div>
-                      {/* <div className="alert alert-warning mt-4 mb-0" role="alert">
-                      <i className="bi bi-exclamation-triangle-fill me-2"></i>Fill your data
-                      correctly!
-                    </div> */}
                     </div>
                   </div>
                 </div>
                 <div className="col-md-7 px-3 pb-3 d-md-none d-grid">
                   <button
                     className="checkout-btn btn btn-primary py-2 fw-bold shadow"
-                    onClick={() => handlePayment({ ...state })}
+                    onClick={handlePayment}
                   >
                     Proceed to Pay
                   </button>

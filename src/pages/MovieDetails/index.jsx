@@ -4,14 +4,31 @@ import Footer from "../../components/Footer";
 import Navbar from "../../components/Navbar";
 import ScheduleCard from "../../components/ScheduleCard";
 import axios from "../../utils/axios";
+import moment from "moment/min/moment-with-locales";
 import "./index.css";
+import { useDispatch } from "react-redux";
+import { createDataBooking } from "../../stores/action/booking";
 
 function MovieDetails() {
   const location = useLocation();
   const navigate = useNavigate();
   const params = useParams();
+  const dispatch = useDispatch();
+
   const [dataMovie, setDataMovie] = useState({});
   const [listSchedule, setListSchedule] = useState([]);
+  const [dataOrder, setDataOrder] = useState({
+    movieId: params.id,
+    movieName: "",
+    price: 0,
+    premiere: "",
+    scheduleId: null,
+    timeBooking: "",
+    dateBooking: moment().format("YYYY-MM-DD"),
+    paymentMethod: "",
+    seats: [],
+    totalPayment: 0
+  });
 
   useEffect(() => {
     getDataMovie();
@@ -37,19 +54,17 @@ function MovieDetails() {
       console.log(error.response);
     }
   };
-  console.log(listSchedule);
-  const [dataOrder, setDataOrder] = useState({
-    movieId: params.id,
-    dateBooking: new Date().toISOString().split("T")[0]
-  });
 
   const changeDataBooking = (data) => {
     setDataOrder({ ...dataOrder, ...data });
   };
-  console.log(dataOrder);
+
   const handleBooking = () => {
-    navigate("/order", { state: dataOrder });
+    dispatch(createDataBooking(dataOrder));
+    navigate("/order");
   };
+
+  console.log(dataOrder);
 
   return (
     <>
@@ -61,7 +76,7 @@ function MovieDetails() {
             <div className="row">
               <div className="col-md-4 movie-img-side mb-4 mb-md-0 d-flex justify-content-center align-items-start">
                 <div className="card p-4">
-                  <img src={dataMovie.imagePath} alt="spiderman" className="img-fluid" />
+                  <img src={dataMovie.imagePath} alt={dataMovie.name} className="img-fluid" />
                 </div>
               </div>
               <div className="col-md-8 movie-details-side">
@@ -72,7 +87,7 @@ function MovieDetails() {
                 <div className="row">
                   <div className="details-group col-6 col-md-4 mb-4">
                     <h2 className="fs-7 text-secondary">Release date</h2>
-                    <p className="mb-0">{dataMovie.releaseDate}</p>
+                    <p className="mb-0">{moment(dataMovie.releaseDate).format("dddd, LL")}</p>
                   </div>
                   <div className="details-group col-6 col-md-8">
                     <h2 className="fs-7 text-secondary">Directed by</h2>
@@ -107,7 +122,9 @@ function MovieDetails() {
                   className="form-control bg-primary-dark"
                   aria-label="date"
                   value={dataOrder.dateBooking}
-                  onChange={(e) => changeDataBooking({ dateBooking: e.target.value })}
+                  onChange={(e) =>
+                    changeDataBooking({ dateBooking: moment(e.target.value).format("YYYY-MM-DD") })
+                  }
                 />
               </div>
               <div className="col-md-3">

@@ -1,13 +1,15 @@
 import React, { useState } from "react";
+import currency from "../../utils/currency";
 import "./index.css";
 
 function ScheduleCard(props) {
-  const [selectedTime, setSelectedTime] = useState("");
   const { id: scheduleId, premiere, location, price, time: timeBooking } = props.data;
   const index = props.index;
   const listSchedule = props.listSchedule;
   const pathname = props.pathname;
-  const showTimes = ["08:30am", "10:30am", "12:00pm", "02:00pm", "04:30pm", "07:00pm", "08:30pm"];
+  
+  const showTimes = ["08:30", "10:30", "12:00", "14:00", "16:30", "19:00", "20:30"];
+  const [selectedTime, setSelectedTime] = useState("");
 
   const textTruncate = (str, length = 45, ending = "...") => {
     return str.length > length ? str.substring(0, length - ending.length) + ending : str;
@@ -68,7 +70,7 @@ function ScheduleCard(props) {
       <div className="card-footer bg-white border-0 px-4 pt-2 pb-4">
         <div className="d-flex justify-content-between mb-3">
           <p className="text-secondary">Price</p>
-          <p className="fw-semibold">Rp {price} /seat</p>
+          <p className="fw-semibold">{currency.format(price)} /seat</p>
         </div>
         {props.pathname === "/manage-schedule" ? (
           <div>

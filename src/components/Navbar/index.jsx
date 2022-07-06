@@ -1,15 +1,25 @@
 import React from "react";
+import { useDispatch, useSelector } from "react-redux";
 import { Link, useNavigate, useLocation } from "react-router-dom";
+import { logout } from "../../stores/action/user";
 import axios from "../../utils/axios";
 
 function Navbar() {
   const location = useLocation();
   const navigate = useNavigate();
-  const dataUser = JSON.parse(localStorage.getItem("dataUser"));
+  const dispatch = useDispatch();
+
+  const dataUser = useSelector((state) => state.user.data);
+  const refreshToken = localStorage.getItem("refreshToken");
 
   const handleLogout = async () => {
-    localStorage.clear();
-    await axios.post("auth/logout");
+    try {
+      await dispatch(logout(refreshToken));
+      localStorage.clear();
+      navigate("/");
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   return (
@@ -17,10 +27,10 @@ function Navbar() {
       <div className="container-lg">
         <Link to="/" className="navbar-brand">
           <img
-            src={require("../../assets/img/logo/logo-nav.png")}
+            src={require("../../assets/img/logo/logo-color.png")}
             alt="logo tickitz"
-            height="24"
-            className="me-4"
+            height="28"
+            className="me-4 mb-1"
           />
         </Link>
         <button
@@ -97,51 +107,50 @@ function Navbar() {
             </li>
             <hr className="my-1" />
           </ul>
-          <Link
-            to="/signin"
-            className={`btn btn-primary py-2 ${dataUser ? "d-none" : "d-block"}`}
-            role="button"
-          >
-            Sign in
-          </Link>
-          <div className={`user-only ${dataUser ? "d-flex" : "d-none"} align-items-center`}>
-            <div>
-              <i className="bi bi-search"></i>
-            </div>
+          {Object.keys(dataUser).length === 0 ? (
+            <Link to="/signin" className={"btn btn-primary py-2"} role="button">
+              Sign in
+            </Link>
+          ) : (
+            <div className={"d-flex align-items-center"}>
+              <div>
+                <i className="bi bi-search"></i>
+              </div>
 
-            <div className="dropdown ms-5">
-              <button
-                className="bg-transparent border-0 dropdown-toggle"
-                type="button"
-                id="dropdownMenuButton1"
-                data-bs-toggle="dropdown"
-                aria-expanded="false"
-                data-bs-offset="  0,20"
-              >
-                <img
-                  src={dataUser ? dataUser.imagePath : ""}
-                  alt="profile"
-                  className="rounded-circle"
-                  style={{ width: "44px" }}
-                />
-              </button>
-              <ul
-                className="dropdown-menu dropdown-menu-end rounded-3"
-                aria-labelledby="dropdownMenuButton1"
-              >
-                <li>
-                  <Link className="dropdown-item" to="#">
-                    Profile
-                  </Link>
-                </li>
-                <li>
-                  <Link to="/" className="dropdown-item" onClick={handleLogout}>
-                    Logout
-                  </Link>
-                </li>
-              </ul>
+              <div className="dropdown ms-5">
+                <button
+                  type="button"
+                  className="bg-transparent border-0"
+                  id="dropdownProfileMenu"
+                  data-bs-toggle="dropdown"
+                  aria-expanded="false"
+                  data-bs-offset="0,20"
+                >
+                  <img
+                    src={dataUser ? dataUser.imagePath : ""}
+                    alt="profile"
+                    className="rounded-circle"
+                    style={{ width: "44px" }}
+                  />
+                </button>
+                <ul
+                  className="dropdown-menu dropdown-menu-end rounded-3"
+                  aria-labelledby="dropdownProfileMenu"
+                >
+                  <li>
+                    <Link className="dropdown-item" to={`user/${dataUser.id}`}>
+                      Profile
+                    </Link>
+                  </li>
+                  <li>
+                    <Link to="/" className="dropdown-item" onClick={handleLogout}>
+                      Logout
+                    </Link>
+                  </li>
+                </ul>
+              </div>
             </div>
-          </div>
+          )}
         </div>
       </div>
     </nav>

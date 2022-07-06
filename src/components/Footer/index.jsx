@@ -8,7 +8,7 @@ function Footer() {
       <div className="container-lg row mb-3 mb-sm-5 mx-auto">
         <div className="col-lg-4 col-sm-12 mb-4 mb-sm-5">
           <img
-            src={require("../../assets/img/logo/logo-footer.png")}
+            src={require("../../assets/img/logo/logo-color.png")}
             alt="logo tickitz"
             className="mb-3 logo-footer"
           />

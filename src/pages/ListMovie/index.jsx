@@ -10,8 +10,11 @@ import { getDataMovieRedux } from "../../stores/action/movie";
 function ListMovie() {
   const dispatch = useDispatch();
   const movies = useSelector((state) => state.movie);
-  const [page, setPage] = useState(1);
   const limit = 8;
+  const [page, setPage] = useState(1);
+  const [search, setSearch] = useState("");
+  const [sort, setSort] = useState("createdAt desc");
+  const [month, setMonth] = useState(new Date().getMonth());
 
   useEffect(() => {
     getDataMovie();
@@ -19,11 +22,11 @@ function ListMovie() {
 
   useEffect(() => {
     getDataMovie();
-  }, [page]);
+  }, [page, month]);
 
   const getDataMovie = async () => {
     try {
-      dispatch(getDataMovieRedux(page, limit));
+      dispatch(getDataMovieRedux(page, limit, search, sort, month));
     } catch (error) {
       console.log(error.response);
     }
@@ -61,7 +64,7 @@ function ListMovie() {
             </div>
           </div>
         </div>
-        <MonthFilter />
+        <MonthFilter month={month} setMonth={setMonth} firstMonth={new Date().getMonth()} />
         <div className="container-lg">
           <div className="card border-0 p-5">
             {movies.isLoading ? (

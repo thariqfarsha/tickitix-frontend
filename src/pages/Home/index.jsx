@@ -1,27 +1,50 @@
 import React, { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 import Card from "../../components/Card";
 import Footer from "../../components/Footer";
 import MonthFilter from "../../components/MonthFilter";
 import Navbar from "../../components/Navbar";
+import { getDataMovieRedux } from "../../stores/action/movie";
 import axios from "../../utils/axios";
 import "./index.css";
 
 function Home() {
   document.title = "Tickitix | Home";
 
+  const dispatch = useDispatch();
+
   const limit = 6;
-  const [page, setPage] = useState(1);
+  const page = 1;
+  const search = "";
+  const sort = "createdAt desc";
+  const [month, setMonth] = useState(new Date().getMonth() + 1);
   const [dataNowShowingMovie, setDataNowShowingMovie] = useState([]);
+  const upcomingMovie = useSelector((state) => state.movie.data);
 
   useEffect(() => {
     getNowShowingMovie();
+    getUpcomingMovie();
   }, []);
+
+  useEffect(() => {
+    getUpcomingMovie();
+  }, [month]);
+
+  console.log("month", month);
+
+  const getUpcomingMovie = async () => {
+    try {
+      dispatch(getDataMovieRedux(page, limit, search, sort, month));
+    } catch (error) {
+      console.log(error.response);
+    }
+  };
 
   const getNowShowingMovie = async () => {
     try {
       const resultNowShowingMovie = await axios.get(
-        `movie?page=${page}&limit=${limit}&searchRelease=${new Date().getMonth()}`
+        `movie?page=${page}&limit=${limit}&searchRelease=${new Date().getMonth() + 1}`
       );
       setDataNowShowingMovie(resultNowShowingMovie.data.data);
     } catch (error) {
@@ -61,9 +84,9 @@ function Home() {
               view all
             </Link>
           </div>
-          <div className="container-lg movie-card-wrapper">
+          <div className="container-lg movie-card-wrapper d-flex">
             {dataNowShowingMovie.map((movie) => (
-              <div key={movie.id} className="d-inline-block">
+              <div key={movie.id}>
                 <Card data={movie} />
               </div>
             ))}
@@ -77,10 +100,10 @@ function Home() {
               view all
             </Link>
           </div>
-          <MonthFilter />
-          <div className="container-lg movie-card-wrapper">
-            {dataNowShowingMovie.map((movie) => (
-              <div key={movie.id} className="d-inline-block">
+          <MonthFilter month={month} setMonth={setMonth} firstMonth={new Date().getMonth() + 1} />
+          <div className="container-lg movie-card-wrapper d-flex">
+            {upcomingMovie.map((movie) => (
+              <div key={movie.id}>
                 <Card data={movie} />
               </div>
             ))}

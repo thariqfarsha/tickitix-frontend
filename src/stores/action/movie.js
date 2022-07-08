@@ -5,7 +5,7 @@ export const getDataMovieRedux = (page, limit, search, sort, month) => {
     type: "GET_DATA_MOVIE",
     payload: axios.get(
       `movie?page=${page}&limit=${limit}&searchName=${search}&sort=${sort}&searchRelease=${
-        month + 1
+        month && month + 1
       }`
     )
   };

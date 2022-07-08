@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Link, useLocation, useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import Footer from "../../components/Footer";
 import Navbar from "../../components/Navbar";
 import Seats from "../../components/Seats";
@@ -14,7 +14,9 @@ function Order() {
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
-  const seatRows = ["A", "B", "C", "D", "E", "F", "G", " "];
+  const seatRows = ["A", "B", "C", "D", "E", "F", "G", "-"];
+  const leftSeats = [1, 2, 3, 4, 5, 6, 7];
+  const rightSeats = [8, 9, 10, 11, 12, 13, 14];
   const [selectedSeat, setSelectedSeat] = useState([]);
   const [reservedSeat, setReservedSeat] = useState(["A1", "B5", "C2", "C3"]);
 
@@ -95,6 +97,10 @@ function Order() {
                   <div className="seats-option-group mb-2 mb-md-0">
                     <h2 className="h4 fw-bold mb-3">Choose Your Seat</h2>
                     <div className="card p-5">
+                      <div
+                        className="bg-primary w-75 rounded-pill mx-auto mb-4"
+                        style={{ height: 8 }}
+                      ></div>
                       <div className="d-flex justify-content-center">
                         <div className="text-center d-none d-md-flex flex-column justify-content-evenly me-4">
                           {seatRows.map((row) => (
@@ -105,11 +111,33 @@ function Order() {
                         </div>
                         <Seats
                           seatRows={seatRows}
-                          selectedSeat={[selectedSeat, setSelectedSeat]}
+                          leftSeats={leftSeats}
+                          rightSeats={rightSeats}
                           reservedSeat={reservedSeat}
                           handleSelectSeat={handleSelectSeat}
+                          // selectedSeat={[selectedSeat, setSelectedSeat]}
                         />
                       </div>
+                      {/* <div className="container">
+                        <div className="row">
+                          <div className="col"></div>
+                          <div className="col d-flex justify-content-between">
+                            {leftSeats.map((num) => (
+                              <div key={num} className="text-secondary text-center fs-7">
+                                {num}
+                              </div>
+                            ))}
+                          </div>
+                          <div className="col"></div>
+                          <div className="col d-flex justify-content-between">
+                            {rightSeats.map((num) => (
+                              <span key={num} className="text-secondary text-center fs-7">
+                                {num}
+                              </span>
+                            ))}
+                          </div>
+                        </div>
+                      </div> */}
                     </div>
                   </div>
                 </div>

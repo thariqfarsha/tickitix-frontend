@@ -13,6 +13,7 @@ import Unauthorized from "./pages/Unauthorized";
 import ListMovie from "./pages/ListMovie";
 import Ticket from "./pages/Ticket";
 import Profile from "./pages/Profile";
+import Dashboard from "./pages/Dashboard";
 
 import PrivateRoute from "./helpers/route/PrivateRoute";
 import PublicRoute from "./helpers/route/PublicRoute";
@@ -39,6 +40,7 @@ function App() {
         </Route>
 
         <Route element={<PrivateRoute isAdmin={true} />}>
+          <Route path="dashboard" element={<Dashboard />} />
           <Route path="manage-movie" element={<ManageMovie />} />
           <Route path="manage-schedule" element={<ManageSchedule />} />
         </Route>

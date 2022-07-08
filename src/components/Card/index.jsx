@@ -27,7 +27,7 @@ function Card(props) {
           {props.pathname === "/manage-movie" ? (
             <div>
               <button
-                className="btn btn-outline-primary py-2 w-100 mb-3"
+                className="btn btn-outline-primary py-2 w-100 mb-2"
                 onClick={() => props.setUpdate(props.data)}
               >
                 Update

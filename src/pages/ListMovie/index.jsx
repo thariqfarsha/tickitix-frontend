@@ -6,23 +6,53 @@ import MonthFilter from "../../components/MonthFilter";
 import Navbar from "../../components/Navbar";
 import { useSelector, useDispatch } from "react-redux";
 import { getDataMovieRedux } from "../../stores/action/movie";
+import { createSearchParams, useNavigate, useSearchParams } from "react-router-dom";
 
 function ListMovie() {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
+
+  const [searchParams] = useSearchParams();
+  const params = Object.fromEntries([...searchParams]);
+
+  console.log(params.search);
   const movies = useSelector((state) => state.movie);
+
   const limit = 8;
   const [page, setPage] = useState(1);
-  const [search, setSearch] = useState("");
+  const [search, setSearch] = useState(params.search || "");
+  // const { search } = params;
   const [sort, setSort] = useState("createdAt desc");
-  const [month, setMonth] = useState(new Date().getMonth());
+  const [month, setMonth] = useState(params.month && new Date().getMonth());
 
+  console.log("search", search);
   useEffect(() => {
     getDataMovie();
   }, []);
 
   useEffect(() => {
     getDataMovie();
+    setSearch("");
+    const params = {};
+    if (page !== "1") {
+      params.page = page;
+    }
+    if (month) {
+      params.month = month;
+    }
+    navigate({
+      pathname: "/list-movie",
+      search: `?${createSearchParams(params)}`
+    });
   }, [page, month]);
+
+  useEffect(() => {
+    getDataMovie();
+  }, [search]);
+
+  useEffect(() => {
+    setSearch(params.search);
+  }, [params.search]);
 
   const getDataMovie = async () => {
     try {
@@ -38,23 +68,27 @@ function ListMovie() {
 
   return (
     <>
-      <Navbar />
+      <Navbar setMonth={setMonth} />
 
       <main className="bg-primary-light pb-4">
         <div className="container-lg my-4">
           <div className="row">
-            <div className="col-2">
-              <h2 className="h4 fw-bold mb-3">List Movie</h2>
+            <div className="col-2 d-flex align-items-center">
+              <h2 className="h4 fw-bold mb-0">List Movie</h2>
             </div>
             <div className="col-6"></div>
-            <div className="col-1">
-              <select className="form-select py-2" aria-label="movie sort method">
+            <div className="col-1 col-md-4">
+              <select
+                className="form-select py-2"
+                aria-label="movie sort method"
+                onChange={(e) => setSort(e.target.value)}
+              >
                 <option defaultValue={""}>Sort</option>
-                <option value="name asc">A - Z</option>
-                <option value="name desc">Z - A</option>
+                <option value="name asc">Title A-Z</option>
+                <option value="name desc">Title Z-A</option>
               </select>
             </div>
-            <div className="col-3">
+            <div className="col-3 d-block d-md-none">
               <input
                 type="text"
                 className="form-control py-2"

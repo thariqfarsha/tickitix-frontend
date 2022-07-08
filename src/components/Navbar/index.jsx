@@ -1,16 +1,26 @@
-import React from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Link, useNavigate, useLocation } from "react-router-dom";
 import { logout } from "../../stores/action/user";
-import axios from "../../utils/axios";
 
-function Navbar() {
+function Navbar(props) {
   const location = useLocation();
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
   const dataUser = useSelector((state) => state.user.data);
   const refreshToken = localStorage.getItem("refreshToken");
+
+  const [isSearchBoxActive, setIsSearchBoxActive] = useState(false);
+  const [search, setSearch] = useState("");
+
+  const searchBox = useRef(null);
+
+  useEffect(() => {
+    if (isSearchBoxActive) {
+      searchBox.current.focus();
+    }
+  }, [isSearchBoxActive]);
 
   const handleLogout = async () => {
     try {
@@ -20,6 +30,19 @@ function Navbar() {
     } catch (error) {
       console.log(error);
     }
+  };
+
+  const handleChangeSearch = (e) => {
+    setSearch(e.target.value);
+  };
+
+  const handleEnter = (e) => {
+    if (e.key !== "Enter") {
+      return;
+    }
+
+    props.setMonth && props.setMonth("");
+    navigate(`/list-movie?search=${search}`);
   };
 
   return (
@@ -113,9 +136,35 @@ function Navbar() {
             </Link>
           ) : (
             <div className={"d-flex align-items-center"}>
-              <div>
-                <i className="bi bi-search"></i>
-              </div>
+              {!isSearchBoxActive ? (
+                <div
+                  role="button"
+                  onClick={() => setIsSearchBoxActive(true)}
+                  style={{ cursor: "pointer" }}
+                >
+                  <i className="bi bi-search"></i>
+                </div>
+              ) : (
+                <div className="position-relative">
+                  <label htmlFor="movieSearchBox" className="form-label visually-hidden">
+                    Search movie
+                  </label>
+                  <input
+                    type="text"
+                    className="form-control py-2 ps-5"
+                    id="movieSearchBox"
+                    placeholder="Search movie..."
+                    // value={search}
+                    onChange={handleChangeSearch}
+                    onKeyDown={handleEnter}
+                    ref={searchBox}
+                  />
+                  <i
+                    className="bi bi-search position-absolute top-50 translate-middle-y"
+                    style={{ left: "6%" }}
+                  ></i>
+                </div>
+              )}
 
               <div className="dropdown ms-5">
                 <button
@@ -127,7 +176,11 @@ function Navbar() {
                   data-bs-offset="0,20"
                 >
                   <img
-                    src={dataUser ? dataUser.imagePath : ""}
+                    src={
+                      dataUser.imagePath
+                        ? dataUser.imagePath
+                        : `https://ui-avatars.com/api/?name=${dataUser.firstName}+${dataUser.lastName}&background=random&size=44`
+                    }
                     alt="profile"
                     className="rounded-circle"
                     style={{ width: "44px" }}

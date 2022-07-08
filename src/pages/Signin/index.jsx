@@ -103,8 +103,8 @@ function SignIn() {
               </div>
               <button className="btn btn-md btn-primary w-100 mt-3 mb-4" type="submit">
                 {isLoggingIn || isLoading ? (
-                  <div class="spinner-border spinner-border-sm text-white" role="status">
-                    <span class="visually-hidden">Loading...</span>
+                  <div className="spinner-border spinner-border-sm text-white" role="status">
+                    <span className="visually-hidden">Loading...</span>
                   </div>
                 ) : (
                   "Sign in"

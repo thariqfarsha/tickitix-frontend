@@ -1,0 +1,11 @@
+.profpic-overlay {
+  transition: 0.2s;
+}
+
+.profpic:hover {
+  cursor: pointer;
+}
+
+.profpic:hover .profpic-overlay {
+  background-color: rgba(0, 0, 0, 0.7);
+}

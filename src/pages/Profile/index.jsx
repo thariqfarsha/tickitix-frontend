@@ -1,16 +1,22 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
 import BookingCard from "../../components/BookingCard";
 import Footer from "../../components/Footer";
 import Navbar from "../../components/Navbar";
-import { getUserById } from "../../stores/action/user";
+import { getUserById, logout } from "../../stores/action/user";
 import axios from "../../utils/axios";
+import "./index.css";
 
 export default function Profile() {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   const user = useSelector((state) => state.user.data);
+  const refreshToken = localStorage.getItem("refreshToken");
 
+  const [selectedFile, setSelectedFile] = useState(null);
+  const [preview, setPreview] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
   const [isTabActive, setIsTabActive] = useState({
     profile: true,
@@ -29,7 +35,35 @@ export default function Profile() {
     newPassword: "",
     confirmPassword: ""
   });
+  const [formImage, setFormImage] = useState({
+    image: null
+  });
   const [bookings, setBookings] = useState([]);
+  const [updateProfpicMsg, setUpdateProfpicMsg] = useState("");
+  const [isError, setIsError] = useState(false);
+
+  useEffect(() => {
+    if (!selectedFile) {
+      setPreview(preview);
+      return;
+    }
+
+    const objectUrl = URL.createObjectURL(selectedFile);
+    setPreview(objectUrl);
+
+    // free memory when ever this component is unmounted
+    return () => URL.revokeObjectURL(objectUrl);
+  }, [selectedFile]);
+
+  const handleSelectFile = (e) => {
+    if (!e.target.files || e.target.files.length === 0) {
+      setSelectedFile(undefined);
+      return;
+    }
+
+    setSelectedFile(e.target.files[0]);
+    setFormImage({ ...formImage, image: e.target.files[0] });
+  };
 
   useEffect(() => {
     if (isTabActive.history === true) {
@@ -40,6 +74,12 @@ export default function Profile() {
       setBookings([]);
     };
   }, [isTabActive.history]);
+
+  useEffect(() => {
+    setTimeout(() => {
+      setUpdateProfpicMsg("");
+    }, 3000);
+  }, [updateProfpicMsg]);
 
   const handleChangeTab = () => {
     setIsTabActive({
@@ -126,6 +166,44 @@ export default function Profile() {
     }
   };
 
+  const handleLogout = async () => {
+    try {
+      await dispatch(logout(refreshToken));
+      localStorage.clear();
+      navigate("/");
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const handleUpdateImage = async () => {
+    try {
+      const formData = new FormData();
+      formData.append("image", formImage.image);
+      const result = await axios.patch(`user/image/${user.id}`, formData);
+      setIsError(false);
+      setUpdateProfpicMsg(result.data.msg);
+      dispatch(getUserById(user.id));
+    } catch (error) {
+      console.log(error);
+      setIsError(true);
+      setUpdateProfpicMsg(error.response.data.msg);
+    }
+  };
+
+  const handleDeleteImage = async () => {
+    try {
+      const result = await axios.delete(`user/image/${user.id}`);
+      setIsError(false);
+      setUpdateProfpicMsg(result.data.msg);
+      dispatch(getUserById(user.id));
+    } catch (error) {
+      console.log(error);
+      setIsError(true);
+      setUpdateProfpicMsg(error.response.data.msg);
+    }
+  };
+
   return (
     <>
       <Navbar />
@@ -135,22 +213,46 @@ export default function Profile() {
           <div className="row my-4">
             <div className="col-md-3">
               <div
-                className="bg-white rounded shadow-sm d-flex flex-column justify-content-center align-items-center px-4 py-5 sticky-md-top"
+                className="bg-white rounded shadow-sm d-flex flex-column justify-content-center align-items-center px-4 py-5 mb-4 sticky-md-top"
                 style={{ top: 100 }}
               >
-                <img
-                  src={user.imagePath}
-                  alt="profile"
-                  className="rounded-circle shadow-sm mb-5"
-                  style={{ width: "40%", height: "40%", objectFit: "cover" }}
-                />
+                <div
+                  role="button"
+                  className="profpic position-relative mb-5"
+                  style={{ width: "50%", aspectRatio: "1 / 1" }}
+                  data-bs-toggle="modal"
+                  data-bs-target="#modalProfpic"
+                >
+                  <img
+                    src={
+                      user.imagePath
+                        ? user.imagePath
+                        : `https://ui-avatars.com/api/?name=${user.firstName}+${user.lastName}&background=random&size=44`
+                    }
+                    alt="profile"
+                    className="rounded-circle shadow-sm"
+                    style={{ width: "100%", objectFit: "cover" }}
+                  />
+                  <div
+                    className="profpic-overlay rounded-circle position-absolute top-0 start-0"
+                    style={{ width: "100%", height: "100%" }}
+                  ></div>
+                  <div
+                    className="rounded-circle bg-secondary shadow-sm d-flex justify-content-center align-items-center position-absolute end-0 bottom-0"
+                    style={{ width: 28, height: 28 }}
+                  >
+                    <i className="bi bi-pen d-block fs-7 text-white"></i>
+                  </div>
+                </div>
                 <h2 className="h5 fw-semibold">{`${user.firstName} ${user.lastName}`}</h2>
                 <p className="text-secondary mb-4">Moviegoers</p>
-                <button className="btn btn-outline-primary py-2 w-50">Logout</button>
+                <button className="btn btn-outline-primary py-2 w-50" onClick={handleLogout}>
+                  Logout
+                </button>
               </div>
             </div>
             <div className="col-md-9">
-              <div className="bg-white rounded shadow-sm mb-4">
+              <div className="d-flex justify-content-center justify-content-md-start bg-white rounded shadow-sm mb-4">
                 <div
                   className={`d-inline-block mx-4 py-3 ${
                     isTabActive.profile && "border-bottom border-primary border-3"
@@ -248,19 +350,21 @@ export default function Profile() {
                         </div>
                         <div className="col-md-6 mt-3">
                           {!isFormEditable.profile ? (
-                            <button
-                              type="button"
-                              className="btn btn-primary py-2 w-50 fw-semibold"
-                              onClick={(e) => handleFormToggle(e, "profile")}
-                            >
-                              Update Profile
-                            </button>
+                            <div className="d-grid d-md-block">
+                              <button
+                                type="button"
+                                className="btn btn-primary py-2 fw-semibold"
+                                onClick={(e) => handleFormToggle(e, "profile")}
+                              >
+                                Update Profile
+                              </button>
+                            </div>
                           ) : (
                             <div className="row">
                               <div className="col-md-6">
                                 <button
                                   type="submit"
-                                  className="btn btn-primary py-2 w-100 fw-semibold"
+                                  className="btn btn-primary py-2 w-100 fw-semibold mb-2 mb-md-0"
                                 >
                                   {isLoading ? (
                                     <div
@@ -330,19 +434,21 @@ export default function Profile() {
                         </div>
                         <div className="col-md-6 mt-3">
                           {!isFormEditable.pwd ? (
-                            <button
-                              type="button"
-                              className="btn btn-primary py-2 fw-semibold"
-                              onClick={(e) => handleFormToggle(e, "pwd")}
-                            >
-                              Update Password
-                            </button>
+                            <div className="d-grid d-md-block">
+                              <button
+                                type="button"
+                                className="btn btn-primary py-2 fw-semibold"
+                                onClick={(e) => handleFormToggle(e, "pwd")}
+                              >
+                                Update Password
+                              </button>
+                            </div>
                           ) : (
                             <div className="row">
                               <div className="col-md-6">
                                 <button
                                   type="submit"
-                                  className="btn btn-primary py-2 w-100 fw-semibold"
+                                  className="btn btn-primary py-2 w-100 fw-semibold mb-2 mb-md-0"
                                 >
                                   {isLoading ? (
                                     <div
@@ -394,6 +500,76 @@ export default function Profile() {
           </div>
         </div>
       </main>
+
+      {/* Modal Profile Picture */}
+      <div
+        className="modal fade"
+        id="modalProfpic"
+        tabIndex="-1"
+        aria-labelledby="updateProfpicModal"
+        aria-hidden="true"
+      >
+        <div className="modal-dialog modal-dialog-centered">
+          <div className="modal-content" style={{ borderRadius: 16 }}>
+            <div className="modal-header">
+              <h5 className="modal-title" id="updateProfpicModal">
+                Update Profile Picture
+              </h5>
+              <button
+                type="button"
+                className="btn-close"
+                data-bs-dismiss="modal"
+                aria-label="Close"
+              ></button>
+            </div>
+            <div className="modal-body">
+              <div className="d-flex flex-column align-items-center">
+                <img
+                  src={
+                    !preview
+                      ? !user.imagePath
+                        ? `https://ui-avatars.com/api/?name=${user.firstName}+${user.lastName}&background=random&size=44`
+                        : user.imagePath
+                      : preview
+                  }
+                  alt="movie preview"
+                  className="d-block rounded-circle mt-3 mb-4"
+                  style={{ width: "30%", aspectRatio: "1 / 1", objectFit: "cover" }}
+                />
+                <label htmlFor="formFile" className="form-label btn btn-outline-primary py-2 mb-0">
+                  <i className="bi bi-upload me-2"></i>Upload image
+                </label>
+                <input
+                  className="form-control visually-hidden"
+                  type="file"
+                  id="formFile"
+                  onChange={handleSelectFile}
+                />
+                {updateProfpicMsg && (
+                  <p
+                    className={`mb-0 mt-2 text-center ${isError ? "text-danger" : "text-success"}`}
+                  >
+                    {updateProfpicMsg}
+                  </p>
+                )}
+              </div>
+            </div>
+            <div className="modal-footer border-0">
+              <button
+                type="button"
+                className="btn btn-outline-danger py-2"
+                // data-bs-dismiss="modal"
+                onClick={handleDeleteImage}
+              >
+                Delete image
+              </button>
+              <button type="button" className="btn btn-primary py-2" onClick={handleUpdateImage}>
+                Update image
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
 
       <Footer />
     </>

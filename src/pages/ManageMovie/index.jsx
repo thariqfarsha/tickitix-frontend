@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import Footer from "../../components/Footer";
 import Navbar from "../../components/Navbar";
 import Card from "../../components/Card";
@@ -12,13 +12,18 @@ import {
 } from "../../stores/action/movie";
 import { useLocation } from "react-router-dom";
 import "./index.css";
+import { Toast } from "bootstrap";
 
 function ManageMovie() {
+  document.title = "Manage Movie | Tickitix";
+
   const location = useLocation();
   const dispatch = useDispatch();
   const movies = useSelector((state) => state.movie);
   const [page, setPage] = useState(1);
   const limit = 8;
+  const [search, setSearch] = useState("");
+  const [sort, setSort] = useState("createdAt desc");
   const [selectedFile, setSelectedFile] = useState(null);
   const [preview, setPreview] = useState(null);
   const [form, setForm] = useState({
@@ -33,8 +38,13 @@ function ManageMovie() {
     synopsis: "",
     image: null
   });
-  const [MovieId, setMovieId] = useState(null);
+  const [movieId, setMovieId] = useState(null);
   const [isUpdate, setIsUpdate] = useState(false);
+  const [toastMsg, setToastMsg] = useState("");
+  const toastNotif = useRef(null);
+
+  const isAllFormFilled = Object.keys(form).every((el) => form[el]);
+  console.log(isAllFormFilled);
 
   useEffect(() => {
     getDataMovie();
@@ -43,6 +53,11 @@ function ManageMovie() {
   useEffect(() => {
     getDataMovie();
   }, [page]);
+
+  useEffect(() => {
+    setPage(1);
+    getDataMovie();
+  }, [sort]);
 
   useEffect(() => {
     setForm({ ...form, duration: form.hour + "h " + form.minute + "m" });
@@ -73,7 +88,7 @@ function ManageMovie() {
 
   const getDataMovie = async () => {
     try {
-      dispatch(getDataMovieRedux(page, limit));
+      dispatch(getDataMovieRedux(page, limit, search, sort, ""));
     } catch (error) {
       console.log(error.response);
     }
@@ -87,11 +102,6 @@ function ManageMovie() {
     const { name, value, files } = e.target;
     if (name === "image") {
       setForm({ ...form, [name]: files[0] });
-      // } else if (name === "hour") {
-      //   setForm({ ...form, duration: form.duration + value + "h " });
-      //   console.log(name);
-      // } else if (name === "minute") {
-      //   setForm({ ...form, duration: form.duration + value + "m" });
     } else {
       setForm({ ...form, [name]: value });
     }
@@ -123,10 +133,12 @@ function ManageMovie() {
       for (const data in form) {
         formData.append(data, form[data]);
       }
-      await dispatch(updateMovieRedux(MovieId, formData));
+      await dispatch(updateMovieRedux(movieId, formData));
       setIsUpdate(false);
       setPreview(null);
       resetForm();
+      setToastMsg("Movie updated!");
+      showToast();
       getDataMovie();
     } catch (error) {
       console.log(error.response);
@@ -134,14 +146,19 @@ function ManageMovie() {
   };
 
   const handleDelete = async (id) => {
-    await dispatch(deleteMovieRedux(id));
-    getDataMovie();
+    try {
+      await dispatch(deleteMovieRedux(id));
+      setToastMsg("Movie deleted!");
+      showToast();
+      getDataMovie();
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      console.log(form);
       const formData = new FormData();
       for (const data in form) {
         formData.append(data, form[data]);
@@ -149,6 +166,8 @@ function ManageMovie() {
       await dispatch(postMovieRedux(formData));
       setPreview(null);
       resetForm();
+      setToastMsg("Movie created!");
+      showToast();
       getDataMovie();
     } catch (error) {
       console.log(error.response);
@@ -169,6 +188,19 @@ function ManageMovie() {
       image: null
     });
     setPreview(null);
+    setIsUpdate(false);
+  };
+
+  const handleSearch = (e) => {
+    if (e.key === "Enter") {
+      setPage(1);
+      getDataMovie();
+    }
+  };
+
+  const showToast = () => {
+    const toast = new Toast(toastNotif.current);
+    toast.show();
   };
 
   return (
@@ -181,17 +213,12 @@ function ManageMovie() {
           <div className="card border-0 p-5">
             <form onSubmit={isUpdate ? handleUpdate : handleSubmit} onReset={resetForm}>
               <div className="row gx-5 mb-4">
-                <div className="col-3">
+                <div className="col-md-3 mb-4">
                   <label htmlFor="formFile" className="form-label card p-4 movie-image-upload">
                     <img
                       src={!preview ? "https://via.placeholder.com/200x300.png?text=+" : preview}
-                      alt="movie image preview"
+                      alt="movie preview"
                     />
-                    {/* <img
-                      src={"https://via.placeholder.com/200x300.png?text=+"}
-                      alt="spiderman"
-                      className="img-fluid"
-                    /> */}
                   </label>
                   <input
                     className="form-control visually-hidden"
@@ -200,9 +227,9 @@ function ManageMovie() {
                     onChange={handleSelectFile}
                   />
                 </div>
-                <div className="col-9">
+                <div className="col-md-9">
                   <div className="row">
-                    <div className="col-6">
+                    <div className="col-sm-6">
                       <div className="mb-4">
                         <label htmlFor="movie-name" className="form-label">
                           Movie Name
@@ -245,7 +272,7 @@ function ManageMovie() {
                         />
                       </div>
                     </div>
-                    <div className="col-6">
+                    <div className="col-sm-6">
                       <div className="mb-4">
                         <label htmlFor="category" className="form-label">
                           Category
@@ -327,14 +354,18 @@ function ManageMovie() {
                 </div>
               </div>
               <div className="row buttons justify-content-end">
-                <div className="col-2">
-                  <button type="reset" className="btn btn-outline-primary w-100">
+                <div className="col-md-2 order-2 order-md-1">
+                  <button type="reset" className="btn btn-outline-primary py-2 w-100">
                     Reset
                   </button>
                 </div>
-                <div className="col-2">
-                  <button type="submit" className="btn btn-primary fw-semibold w-100">
-                    {isUpdate ? "Update" : "Save"}
+                <div className="col-md-2 order-1 order-md-2 mb-3">
+                  <button
+                    type="submit"
+                    className="btn btn-primary fw-semibold py-2 w-100"
+                    disabled={!isAllFormFilled}
+                  >
+                    {isUpdate ? "Update" : "Add Movie"}
                   </button>
                 </div>
               </div>
@@ -344,30 +375,38 @@ function ManageMovie() {
 
         <section className="data-movie">
           <div className="container-lg my-4">
-            <div className="row">
-              <div className="col-2 d-flex align-items-center">
-                <h2 className="h4 fw-bold mb-3">List Movie</h2>
+            <div className="row align-items-center">
+              <div className="col-md-2">
+                <h2 className="h4 fw-bold">List Movie</h2>
               </div>
-              <div className="col-6"></div>
-              <div className="col-1">
-                <select className="form-select py-2" aria-label="movie sort method">
-                  <option defaultValue={""}>Sort</option>
-                  <option value="name asc">A - Z</option>
-                  <option value="name desc">Z - A</option>
+              <div className="col-md-5"></div>
+              <div className="col-4 col-md-2">
+                <select
+                  className="form-select py-2"
+                  aria-label="movie sort method"
+                  onChange={(e) => setSort(e.target.value)}
+                >
+                  <option defaultValue="" value="">
+                    -- Sort --
+                  </option>
+                  <option value="name asc">Title A-Z</option>
+                  <option value="name desc">Title Z-A</option>
                 </select>
               </div>
-              <div className="col-3">
+              <div className="col-8 col-md-3">
                 <input
                   type="text"
                   className="form-control py-2"
                   aria-label="search movie name"
                   placeholder="Search movie name..."
+                  onChange={(e) => setSearch(e.target.value)}
+                  onKeyDown={handleSearch}
                 />
               </div>
             </div>
           </div>
           <div className="container-lg">
-            <div className="card border-0 p-5">
+            <div className="card border-0 p-0 p-sm-3 p-md-5">
               {movies.isLoading ? (
                 <div className="d-flex justify-content-center">
                   <div className="spinner-grow text-primary text-center" role="status">
@@ -375,14 +414,15 @@ function ManageMovie() {
                   </div>
                 </div>
               ) : (
-                <div className="row row-cols-4 g-5 px-3 py-2">
+                <div className="row row-cols-2 row-cols-sm-3 row-cols-md-4 g-3 g-sm-4 g-md-5 px-3 py-3">
                   {movies.data.map((movie) => (
                     <div className="col" key={movie.id}>
                       <Card
                         data={movie}
                         pathname={location.pathname}
                         setUpdate={setUpdate}
-                        handleDelete={handleDelete}
+                        setMovieId={setMovieId}
+                        // handleDelete={handleDelete}
                       />
                     </div>
                   ))}
@@ -411,6 +451,65 @@ function ManageMovie() {
           </div>
         </section>
       </main>
+
+      {/* Toast Notification */}
+      <div
+        className="toast align-items-center text-white bg-primary border-0 position-fixed"
+        style={{ zIndex: 11, top: "13%", right: "1%" }}
+        role="alert"
+        aria-live="assertive"
+        aria-atomic="true"
+        ref={toastNotif}
+      >
+        <div className="d-flex">
+          <div className="toast-body fw-bold">{toastMsg || "No notification"}</div>
+          <button
+            type="button"
+            className="btn-close btn-close-white me-2 m-auto"
+            data-bs-dismiss="toast"
+            aria-label="Close"
+          ></button>
+        </div>
+      </div>
+
+      {/* Modal Delete Confirmation */}
+      <div
+        className="modal fade"
+        id="deleteModal"
+        tabIndex="-1"
+        aria-labelledby="deleteConfirmationModal"
+        aria-hidden="true"
+      >
+        <div className="modal-dialog modal-dialog-centered">
+          <div className="modal-content border-0" style={{ borderRadius: 16 }}>
+            <div className="modal-header border-0 px-4">
+              <h5 className="modal-title fw-semibold">Delete Confirmation</h5>
+              <button
+                type="button"
+                className="btn-close"
+                data-bs-dismiss="modal"
+                aria-label="Close"
+              ></button>
+            </div>
+            <div className="modal-body px-4">
+              <p className="mb-0">Are you sure to delete this movie?</p>
+            </div>
+            <div className="modal-footer border-0 px-4 pt-0 pb-3">
+              <button type="button" className="btn btn-secondary py-2 px-3" data-bs-dismiss="modal">
+                Cancel
+              </button>
+              <button
+                type="button"
+                className="btn btn-danger py-2 px-3"
+                data-bs-dismiss="modal"
+                onClick={() => handleDelete(movieId)}
+              >
+                Delete
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
 
       <Footer />
     </>

@@ -11,17 +11,6 @@ function Navbar(props) {
   const dataUser = useSelector((state) => state.user.data);
   const refreshToken = localStorage.getItem("refreshToken");
 
-  const [isSearchBoxActive, setIsSearchBoxActive] = useState(false);
-  const [search, setSearch] = useState("");
-
-  const searchBox = useRef(null);
-
-  useEffect(() => {
-    if (isSearchBoxActive) {
-      searchBox.current.focus();
-    }
-  }, [isSearchBoxActive]);
-
   const handleLogout = async () => {
     try {
       await dispatch(logout(refreshToken));
@@ -30,19 +19,6 @@ function Navbar(props) {
     } catch (error) {
       console.log(error);
     }
-  };
-
-  const handleChangeSearch = (e) => {
-    setSearch(e.target.value);
-  };
-
-  const handleEnter = (e) => {
-    if (e.key !== "Enter") {
-      return;
-    }
-
-    props.setMonth && props.setMonth("");
-    navigate(`/list-movie?search=${search}`);
   };
 
   return (
@@ -136,36 +112,6 @@ function Navbar(props) {
             </Link>
           ) : (
             <div className={"d-flex align-items-center"}>
-              {!isSearchBoxActive ? (
-                <div
-                  role="button"
-                  onClick={() => setIsSearchBoxActive(true)}
-                  style={{ cursor: "pointer" }}
-                >
-                  <i className="bi bi-search"></i>
-                </div>
-              ) : (
-                <div className="position-relative">
-                  <label htmlFor="movieSearchBox" className="form-label visually-hidden">
-                    Search movie
-                  </label>
-                  <input
-                    type="text"
-                    className="form-control py-2 ps-5"
-                    id="movieSearchBox"
-                    placeholder="Search movie..."
-                    // value={search}
-                    onChange={handleChangeSearch}
-                    onKeyDown={handleEnter}
-                    ref={searchBox}
-                  />
-                  <i
-                    className="bi bi-search position-absolute top-50 translate-middle-y"
-                    style={{ left: "6%" }}
-                  ></i>
-                </div>
-              )}
-
               <div className="dropdown ms-5">
                 <button
                   type="button"
@@ -191,7 +137,7 @@ function Navbar(props) {
                   aria-labelledby="dropdownProfileMenu"
                 >
                   <li>
-                    <Link className="dropdown-item" to={`user/${dataUser.id}`}>
+                    <Link className="dropdown-item" to={`/user/${dataUser.id}`}>
                       Profile
                     </Link>
                   </li>

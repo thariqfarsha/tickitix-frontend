@@ -29,31 +29,36 @@ export default function BookingCard(props) {
 
   return (
     <div className="card border-0 mb-3">
-      <div className="card-body p-4 d-flex justify-content-between align-items-center">
-        <div>
-          <p className="text-secondary fs-7 mb-2">{`${moment(dateBooking)
-            .locale("id")
-            .format("ddd, LL")} - ${timeBooking}`}</p>
-          <h5 className="fw-bold mb-0">{name}</h5>
-        </div>
-        <div>
-          <img
-            src={premiere && require(`../../assets/img/logo/cinema/${premiere}.png`)}
-            alt="cinema logo"
-            height={premiere === "cineOne21" ? 20 : 28}
-          />
+      <div className="card-body p-4">
+        <div className="row">
+          <div className="col-md-8 order-2 order-md-1">
+            <p className="text-secondary fs-7 mb-2">{`${moment(dateBooking)
+              .locale("id")
+              .format("ddd, LL")} - ${timeBooking}`}</p>
+            <h5 className="fw-bold mb-0">{name}</h5>
+          </div>
+          <div className="col-md-4 d-flex justify-content-start justify-content-md-end align-items-center order-1 order-md-2 mb-3 mb-md-0">
+            <img
+              src={premiere && require(`../../assets/img/logo/cinema/${premiere}.png`)}
+              alt="cinema logo"
+              height={premiere === "cineOne21" ? 20 : 28}
+            />
+          </div>
         </div>
       </div>
-      <div className="card-footer bg-white px-4 py-3 d-flex justify-content-between align-items-center">
+      <div className="card-footer bg-white px-4 py-3 d-grid d-md-flex align-items-center">
         <button
           className={`btn ${
-            statusUsed === "active" && new Date().getTime() < new Date(dateBooking).getTime()
+            statusUsed === "active" &&
+            new Date().getTime() <
+              new Date(dateBooking && dateBooking.split("T")[0] + "T" + timeBooking + "Z").getTime()
               ? "btn-success"
               : "btn-secondary"
           } py-2 px-4 text-white fw-semibold`}
           onClick={() => navigate(`/booking/id/${id}`)}
         >
-          {new Date().getTime() > new Date(dateBooking).getTime()
+          {new Date().getTime() >
+          new Date(dateBooking && dateBooking.split("T")[0] + "T" + timeBooking + "Z").getTime()
             ? "Ticket is expired"
             : statusUsed === "active"
             ? "Ticket is active"

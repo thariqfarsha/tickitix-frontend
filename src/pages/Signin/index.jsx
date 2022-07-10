@@ -29,7 +29,6 @@ function SignIn() {
 
       setIsLoggingIn(true);
       const resultLogin = await axios.post("auth/login", form).then(setIsLoggingIn(false));
-      console.log(resultLogin.data.data);
       localStorage.setItem("token", resultLogin.data.data.token);
       localStorage.setItem("refreshToken", resultLogin.data.data.refreshToken);
       await dispatch(getUserById(resultLogin.data.data.id));

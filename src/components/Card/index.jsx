@@ -27,14 +27,18 @@ function Card(props) {
           {props.pathname === "/manage-movie" ? (
             <div>
               <button
+                type="button"
                 className="btn btn-outline-primary py-2 w-100 mb-2"
                 onClick={() => props.setUpdate(props.data)}
               >
                 Update
               </button>
               <button
+                type="button"
                 className="btn btn-outline-danger py-2 w-100"
-                onClick={() => props.handleDelete(props.data.id)}
+                data-bs-toggle="modal"
+                data-bs-target="#deleteModal"
+                onClick={() => props.setMovieId(props.data.id)}
               >
                 Delete
               </button>

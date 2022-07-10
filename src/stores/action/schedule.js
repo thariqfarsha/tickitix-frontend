@@ -1,10 +1,10 @@
 import axios from "../../utils/axios";
 
-export const getDataScheduleRedux = (movieId, page, limit) => {
+export const getDataScheduleRedux = (movieId, page, limit, sort, location) => {
   return {
     type: "GET_DATA_SCHEDULE",
     payload: axios.get(
-      `schedule?movieId=${movieId}&page=${page}&limit=${limit}&sort=createdAt%20desc`
+      `schedule?movieId=${movieId}&page=${page}&limit=${limit}&sort=${sort}&searchLocation=${location}`
     )
   };
 };

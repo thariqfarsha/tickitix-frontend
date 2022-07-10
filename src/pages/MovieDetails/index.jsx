@@ -17,6 +17,9 @@ function MovieDetails() {
 
   const [dataMovie, setDataMovie] = useState({});
   const [listSchedule, setListSchedule] = useState([]);
+  const [premiereLocation, setPremiereLocation] = useState("");
+  const [page, setPage] = useState(1);
+  const [totalPage, setTotalPage] = useState(1);
   const [dataOrder, setDataOrder] = useState({
     movieId: params.id,
     movieName: "",
@@ -35,6 +38,10 @@ function MovieDetails() {
     getListSchedule();
   }, []);
 
+  useEffect(() => {
+    getListSchedule();
+  }, [premiereLocation, page, dataOrder.dateBooking]);
+
   const getDataMovie = async () => {
     try {
       console.log("get data movie");
@@ -45,11 +52,27 @@ function MovieDetails() {
     }
   };
 
+  console.log(premiereLocation);
+
   const getListSchedule = async () => {
     try {
       console.log("get list movie");
-      const resultListSchedule = await axios.get(`schedule?movieId=${params.id}`);
-      setListSchedule(resultListSchedule.data.data);
+      const resultListSchedule = await axios.get(
+        `schedule?movieId=${params.id}&searchLocation=${premiereLocation}&page=${page}`
+      );
+      setTotalPage(resultListSchedule.data.pagination.totalPage);
+
+      const filteredSchedule = resultListSchedule.data.data.filter(
+        (el) =>
+          new Date(el.dateStart).getTime() <= new Date(dataOrder.dateBooking).getTime() &&
+          new Date(el.dateEnd).getTime() >= new Date(dataOrder.dateBooking).getTime()
+      );
+
+      if (page === 1) {
+        setListSchedule(filteredSchedule);
+      } else {
+        setListSchedule([...listSchedule, ...filteredSchedule]);
+      }
     } catch (error) {
       console.log(error.response);
     }
@@ -64,7 +87,9 @@ function MovieDetails() {
     navigate("/order");
   };
 
-  console.log(dataOrder);
+  const handlePagination = () => {
+    setPage(page + 1);
+  };
 
   return (
     <>
@@ -73,7 +98,7 @@ function MovieDetails() {
       <main>
         <section className="movie-details-section bg-white pt-4 pb-5 px-3 px-md-0">
           <div className="container-lg">
-            <div className="row">
+            <div className="row gx-5">
               <div className="col-md-4 movie-img-side mb-4 mb-md-0 d-flex justify-content-center align-items-start">
                 <div className="card p-4">
                   <img src={dataMovie.imagePath} alt={dataMovie.name} className="img-fluid" />
@@ -122,16 +147,24 @@ function MovieDetails() {
                   className="form-control bg-primary-dark"
                   aria-label="date"
                   value={dataOrder.dateBooking}
+                  min={new Date().toISOString().split("T")[0]}
                   onChange={(e) =>
                     changeDataBooking({ dateBooking: moment(e.target.value).format("YYYY-MM-DD") })
                   }
                 />
               </div>
               <div className="col-md-3">
-                <select className="form-select bg-primary-dark" aria-label="cinema location">
-                  <option defaultValue={""}>Choose location</option>
-                  <option value="East Purwokerto">East Purwokerto</option>
-                  <option value="South Purwokerto">South Purwokerto</option>
+                <select
+                  className="form-select bg-primary-dark"
+                  aria-label="cinema location"
+                  onChange={(e) => setPremiereLocation(e.target.value)}
+                >
+                  <option defaultValue={""} value="">
+                    -- Choose location --
+                  </option>
+                  <option value="Jakarta">Jakarta</option>
+                  <option value="Bogor">Bogor</option>
+                  <option value="Depok">Depok</option>
                 </select>
               </div>
             </div>
@@ -152,10 +185,18 @@ function MovieDetails() {
                 ))}
               </div>
             </div>
-            <div className="d-flex justify-content-center view-more">
-              <button className="d-block text-sm link color-primary btn btn-link text-in-line">
-                view more
-              </button>
+            <div className="position-relative my-5">
+              <hr className="text-dark w-100" />
+              {page === totalPage || totalPage === 0 || (
+                <div
+                  role="button"
+                  className="d-block fw-bold link-primary text-decoration-none px-3 position-absolute top-0 start-50 translate-middle"
+                  style={{ backgroundColor: "#F5F6F8" }}
+                  onClick={handlePagination}
+                >
+                  view more
+                </div>
+              )}
             </div>
           </div>
         </section>

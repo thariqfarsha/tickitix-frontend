@@ -71,7 +71,7 @@ export default function Dashboard() {
           <div className="row my-4">
             <div className="col-md-9">
               <h4 className="fw-bold mb-3">Dashboard</h4>
-              <div className="bg-white rounded p-4">
+              <div className="bg-white rounded p-4 mb-4">
                 <ResponsiveContainer width="100%" height={360}>
                   <LineChart
                     width={500}

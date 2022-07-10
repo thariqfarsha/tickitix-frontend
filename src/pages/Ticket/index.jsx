@@ -29,6 +29,7 @@ export default function Ticket() {
     try {
       const result = await axios.get(`booking/id/${params.id}`);
       setDataBooking(result.data.data);
+      console.log(result);
     } catch (error) {
       console.log(error);
     }
@@ -40,12 +41,12 @@ export default function Ticket() {
 
       <main className="bg-primary bg-opacity-10 pb-4">
         <div className="container-lg">
-          <div className="bg-white rounded p-5 my-4">
+          <div className="bg-white rounded p-3 p-md-5 my-4">
             <div className="container">
-              <div className="row mx-3 border" style={{ borderRadius: 16 }}>
-                <div className="col-8 p-0 position-relative">
+              <div className="row mx-0 mx-md-3 border" style={{ borderRadius: 16 }}>
+                <div className="col-md-8 order-2 order-md-1 p-0 position-relative">
                   <div
-                    className="bg-primary px-5 py-4 border-end"
+                    className="d-none d-md-block bg-primary px-5 py-4 border-end"
                     style={{ borderTopLeftRadius: 16 }}
                   >
                     <img
@@ -55,7 +56,7 @@ export default function Ticket() {
                     />
                   </div>
                   <div
-                    className="container bg-white px-5 py-4 border-end"
+                    className="container bg-white px-4 px-md-5 py-4 border-end border-top"
                     style={{ borderBottomLeftRadius: 16 }}
                   >
                     <div className="row">
@@ -64,7 +65,7 @@ export default function Ticket() {
                         <p className="fw-semibold mb-4">{dataBooking.name}</p>
                       </div>
                       {bookingDetails.map((detail, index) => (
-                        <div className="col-4" key={index}>
+                        <div className="col-6 col-md-4" key={index}>
                           <p className="text-secondary fs-7 mb-2">{detail.label}</p>
                           <p className="fw-semibold mb-4">{detail.value}</p>
                         </div>
@@ -90,9 +91,9 @@ export default function Ticket() {
                     }}
                   ></div> */}
                 </div>
-                <div className="col-4 p-0 d-flex flex-column">
+                <div className="col-md-4 order-1 order-md-2 p-0 d-flex flex-column">
                   <div
-                    className="bg-primary px-5 py-4 text-center"
+                    className="d-none d-md-block bg-primary px-4 px-md-5 py-2 py-md-4 text-center"
                     style={{ borderTopRightRadius: 16 }}
                   >
                     <img
@@ -101,8 +102,22 @@ export default function Ticket() {
                       height={28}
                     />
                   </div>
-                  <div className="h-100 d-flex justify-content-center align-items-center">
-                    {new Date().getTime() > new Date(dataBooking.dateBooking).getTime() ? (
+                  <div
+                    className="d-block d-md-none bg-primary px-4 px-md-5 py-2 py-md-4 text-center"
+                    style={{ borderTopRightRadius: 16, borderTopLeftRadius: 16 }}
+                  >
+                    <img
+                      src={require("../../assets/img/logo/logo-white-md.png")}
+                      alt="tickitix logo"
+                      height={24}
+                    />
+                  </div>
+                  <div className="h-100 p-5 d-flex justify-content-center align-items-center">
+                    {new Date().getTime() >
+                    new Date(
+                      dataBooking.dateBooking &&
+                        dataBooking.dateBooking.split("T")[0] + "T" + dataBooking.timeBooking + "Z"
+                    ).getTime() ? (
                       <div
                         className="d-flex justify-content-center align-items-center"
                         style={{

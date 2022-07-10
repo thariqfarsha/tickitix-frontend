@@ -80,7 +80,11 @@ function Home() {
         <section className="now-showing-section container-fluid bg-primary bg-opacity-10 px-3 px-lg-0 pt-4 pb-5 py-sm-5">
           <div className="container-lg d-flex justify-content-between align-items-center mb-4">
             <h2 className="h2 fw-bold text-primary">Now Showing</h2>
-            <Link to="#" className="d-block fw-bold link-primary text-decoration-none">
+            <Link
+              to="/list-movie"
+              state={{ month: new Date().getMonth() }}
+              className="d-block fw-bold link-primary text-decoration-none"
+            >
               view all
             </Link>
           </div>
@@ -96,7 +100,11 @@ function Home() {
         <section className="container-fluid bg-white px-3 px-lg-0 pt-4 py-sm-5">
           <div className="container-lg d-flex justify-content-between align-items-center mb-4">
             <h2 className="h2 fw-bold text-dark">Upcoming Movies</h2>
-            <Link to="#" className="d-block fw-bold link-primary text-decoration-none">
+            <Link
+              to="/list-movie"
+              state={{ month: new Date().getMonth() + 1 }}
+              className="d-block fw-bold link-primary text-decoration-none"
+            >
               view all
             </Link>
           </div>

@@ -1,0 +1,13 @@
+.btn-time:hover {
+  background-color: var(--bs-danger);
+  color: transparent;
+  position: relative;
+}
+
+.btn-time:hover::after {
+  content: "delete";
+  color: white;
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+}

@@ -7,7 +7,7 @@ function ScheduleCard(props) {
   const index = props.index;
   const listSchedule = props.listSchedule;
   const pathname = props.pathname;
-  
+
   const showTimes = ["08:30", "10:30", "12:00", "14:00", "16:30", "19:00", "20:30"];
   const [selectedTime, setSelectedTime] = useState("");
 
@@ -16,7 +16,7 @@ function ScheduleCard(props) {
   };
 
   return (
-    <div className="card schedule-card shadow-sm">
+    <div className="card schedule-card shadow-sm h-100">
       <div className="card-header bg-white py-4">
         <div className="row">
           <div className="col-6 d-flex justify-content-center align-items-center">
@@ -75,14 +75,17 @@ function ScheduleCard(props) {
         {props.pathname === "/manage-schedule" ? (
           <div>
             <button
-              className="btn btn-outline-primary py-2 w-100 mb-3"
+              className="btn btn-outline-primary py-2 w-100 mb-2"
               onClick={() => props.setUpdate(props.data)}
             >
               Update
             </button>
             <button
               className="btn btn-outline-danger py-2 w-100"
-              onClick={() => props.handleDelete(props.data.scheduleId)}
+              // onClick={() => props.handleDelete(props.data.scheduleId)}
+              data-bs-toggle="modal"
+              data-bs-target="#deleteModal"
+              onClick={() => props.setScheduleId(scheduleId)}
             >
               Delete
             </button>

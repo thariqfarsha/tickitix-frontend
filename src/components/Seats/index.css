@@ -1,5 +1,6 @@
 .seats .form-check-input:disabled[type="checkbox"] {
-  background-color: #262630;
+  /* background-color: #262630; */
+  background-color: var(--bs-secondary);
 }
 
 .seats .form-check-input:checked[type="checkbox"] {

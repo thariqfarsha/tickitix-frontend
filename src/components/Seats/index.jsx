@@ -16,7 +16,7 @@ function Seats(props) {
           <div className="col d-flex justify-content-center">
             {leftSeats.map((seat) =>
               row === "-" ? (
-                <div key={seat} className="form-check px-2 py-1">
+                <div key={seat} className="form-check px-2 py-1 d-none d-md-flex">
                   <div
                     className="text-secondary text-center fs-7"
                     style={{ width: 16, height: 16 }}
@@ -48,7 +48,7 @@ function Seats(props) {
               row === "-" ? (
                 <div
                   key={seat}
-                  className="form-check py-1"
+                  className="form-check py-1 d-none d-md-flex"
                   style={{
                     paddingInline: Boolean(seat) && seat.toString().length > 1 ? 8 : 10
                   }}

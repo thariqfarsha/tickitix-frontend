@@ -23,20 +23,18 @@ function Payment() {
     totalPayment: dataBooking.totalPayment
   };
 
-  useEffect(() => {
-    if (location.search === "?status=success") {
-      window.location.href = "http://localhost:3000/booking/id/34";
-    }
-  }, []);
+  // useEffect(() => {
+  //   if (location.search === "?status=success") {
+  //     // window.location.href = `https://tickitix.netlify.app/user/${dataUser.id}`;
+  //     window.location.href = `http://localhost:3000/user/${dataUser.id}`;
+  //   }
+  // }, []);
 
   const handlePayment = async () => {
     try {
       const result = await axios.post("booking", formBooking);
       console.log(result);
       window.location.href = result.data.data.redirectUrl;
-      // const resultPayment = await axios.post("booking", JSON.stringify(dataPayment));
-      // console.log(JSON.stringify(dataPayment));
-      // console.log(resultPayment);
     } catch (error) {
       console.log(error);
     }

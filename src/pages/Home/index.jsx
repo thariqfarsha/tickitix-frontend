@@ -89,11 +89,12 @@ function Home() {
             </Link>
           </div>
           <div className="container-lg movie-card-wrapper d-flex">
-            {dataNowShowingMovie.map((movie) => (
-              <div key={movie.id}>
-                <Card data={movie} />
-              </div>
-            ))}
+            {dataNowShowingMovie &&
+              dataNowShowingMovie.map((movie) => (
+                <div key={movie.id}>
+                  <Card data={movie} />
+                </div>
+              ))}
           </div>
         </section>
 
@@ -110,11 +111,12 @@ function Home() {
           </div>
           <MonthFilter month={month} setMonth={setMonth} firstMonth={new Date().getMonth() + 1} />
           <div className="container-lg movie-card-wrapper d-flex">
-            {upcomingMovie.map((movie) => (
-              <div key={movie.id}>
-                <Card data={movie} />
-              </div>
-            ))}
+            {upcomingMovie &&
+              upcomingMovie.map((movie) => (
+                <div key={movie.id}>
+                  <Card data={movie} />
+                </div>
+              ))}
           </div>
         </section>
 

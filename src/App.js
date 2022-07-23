@@ -19,6 +19,8 @@ import PrivateRoute from "./helpers/route/PrivateRoute";
 import PublicRoute from "./helpers/route/PublicRoute";
 import ManageMovie from "./pages/ManageMovie";
 import ManageSchedule from "./pages/ManageSchedule";
+import ForgotPassword from "./pages/ForgotPassword";
+import ResetPassword from "./pages/ResetPassword";
 
 function App() {
   return (
@@ -37,6 +39,8 @@ function App() {
         <Route element={<PublicRoute restricted={true} />}>
           <Route path="signin" element={<SignIn />} />
           <Route path="signup" element={<SignUp />} />
+          <Route path="forgot-password" element={<ForgotPassword />} />
+          <Route path="reset-password/:id" element={<ResetPassword />} />
         </Route>
 
         <Route element={<PrivateRoute isAdmin={true} />}>

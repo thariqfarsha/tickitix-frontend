@@ -159,7 +159,6 @@ export default function Profile() {
     try {
       setIsLoading(true);
       const result = await axios.get(`booking/user/${user.id}`);
-      console.log(result.data);
       setBookings(result.data.data);
       setIsLoading(false);
     } catch (error) {

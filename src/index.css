@@ -15,8 +15,7 @@ main {
   padding-top: 80px;
 }
 
-.signin-banner,
-.signup-banner {
+.auth-banner {
   background-color: hsl(256, 67%, 25%);
   background-image: linear-gradient(hsla(256, 67%, 25%, 0.7), hsla(256, 67%, 25%, 0.7)),
     url("./assets/img/login-bg-img.jpg");

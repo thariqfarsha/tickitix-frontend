@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import BookingCard from "../../components/BookingCard";
@@ -7,6 +7,7 @@ import Navbar from "../../components/Navbar";
 import { getUserById, logout } from "../../stores/action/user";
 import axios from "../../utils/axios";
 import "./index.css";
+import { Toast } from "bootstrap";
 
 export default function Profile() {
   const dispatch = useDispatch();
@@ -41,6 +42,13 @@ export default function Profile() {
   const [bookings, setBookings] = useState([]);
   const [updateProfpicMsg, setUpdateProfpicMsg] = useState("");
   const [isError, setIsError] = useState(false);
+  const [toastMsg, setToastMsg] = useState("");
+  const [showPwd, setShowPwd] = useState({
+    newPassword: false,
+    confirmPassword: false
+  });
+
+  const toastNotif = useRef(null);
 
   useEffect(() => {
     if (!selectedFile) {
@@ -78,6 +86,7 @@ export default function Profile() {
   useEffect(() => {
     setTimeout(() => {
       setUpdateProfpicMsg("");
+      setIsError(false);
     }, 3000);
   }, [updateProfpicMsg]);
 
@@ -119,10 +128,15 @@ export default function Profile() {
       setIsLoading(false);
       setIsFormEditable({ ...isFormEditable, profile: false });
       resetForm.pwd();
-      console.log(result.data.msg);
+      setIsError(false);
+      setToastMsg(result.data.msg);
+      showToast();
     } catch (error) {
-      setIsLoading(false);
       console.log(error);
+      setIsLoading(false);
+      setIsError(true);
+      setToastMsg(error.response.data.msg);
+      showToast();
     }
   };
 
@@ -135,9 +149,15 @@ export default function Profile() {
       setIsLoading(false);
       setIsFormEditable({ ...isFormEditable, pwd: false });
       resetForm.pwd();
-      console.log(result.data.msg);
+      setIsError(false);
+      setToastMsg(result.data.msg);
+      showToast();
     } catch (error) {
       console.log(error);
+      setIsLoading(false);
+      setIsError(true);
+      setToastMsg(error.response.data.msg);
+      showToast();
     }
   };
 
@@ -202,6 +222,11 @@ export default function Profile() {
       setIsError(true);
       setUpdateProfpicMsg(error.response.data.msg);
     }
+  };
+
+  const showToast = () => {
+    const toast = new Toast(toastNotif.current);
+    toast.show();
   };
 
   return (
@@ -403,16 +428,31 @@ export default function Profile() {
                             <label htmlFor="newPassword" className="form-label">
                               New Password
                             </label>
-                            <input
-                              type="password"
-                              className="form-control"
-                              id="newPassword"
-                              name="newPassword"
-                              value={formPwd.newPassword}
-                              onChange={handleChangeFormPwd}
-                              placeholder="Enter new password"
-                              disabled={!isFormEditable.pwd}
-                            />
+                            <div className="position-relative">
+                              <input
+                                type={showPwd.newPassword ? "text" : "password"}
+                                className="form-control"
+                                id="newPassword"
+                                name="newPassword"
+                                value={formPwd.newPassword}
+                                onChange={handleChangeFormPwd}
+                                placeholder="Enter new password"
+                                disabled={!isFormEditable.pwd}
+                              />
+                              <div
+                                role="button"
+                                className=" position-absolute me-2 top-50 end-0 translate-middle"
+                                onClick={() =>
+                                  setShowPwd({ ...showPwd, newPassword: !showPwd.newPassword })
+                                }
+                              >
+                                <i
+                                  className={`bi ${
+                                    showPwd.newPassword ? "bi-eye-slash" : "bi-eye"
+                                  }`}
+                                ></i>
+                              </div>
+                            </div>
                           </div>
                         </div>
                         <div className="col-md-6">
@@ -420,16 +460,34 @@ export default function Profile() {
                             <label htmlFor="confirmPassword" className="form-label">
                               Confirm Password
                             </label>
-                            <input
-                              type="password"
-                              className="form-control"
-                              id="confirmPassword"
-                              name="confirmPassword"
-                              value={formPwd.confirmPassword}
-                              onChange={handleChangeFormPwd}
-                              placeholder="Confirm your password"
-                              disabled={!isFormEditable.pwd}
-                            />
+                            <div className="position-relative">
+                              <input
+                                type={showPwd.confirmPassword ? "text" : "password"}
+                                className="form-control"
+                                id="confirmPassword"
+                                name="confirmPassword"
+                                value={formPwd.confirmPassword}
+                                onChange={handleChangeFormPwd}
+                                placeholder="Confirm your password"
+                                disabled={!isFormEditable.pwd}
+                              />
+                              <div
+                                role="button"
+                                className=" position-absolute me-2 top-50 end-0 translate-middle"
+                                onClick={() =>
+                                  setShowPwd({
+                                    ...showPwd,
+                                    confirmPassword: !showPwd.confirmPassword
+                                  })
+                                }
+                              >
+                                <i
+                                  className={`bi ${
+                                    showPwd.confirmPassword ? "bi-eye-slash" : "bi-eye"
+                                  }`}
+                                ></i>
+                              </div>
+                            </div>
                           </div>
                         </div>
                         <div className="col-md-6 mt-3">
@@ -570,6 +628,28 @@ export default function Profile() {
               </button>
             </div>
           </div>
+        </div>
+      </div>
+
+      {/* Toast Notification */}
+      <div
+        className={`toast align-items-center text-white border-0 position-fixed ${
+          isError ? "bg-danger" : "bg-primary"
+        }`}
+        style={{ zIndex: 11, top: "13%", right: "1%" }}
+        role="alert"
+        aria-live="assertive"
+        aria-atomic="true"
+        ref={toastNotif}
+      >
+        <div className="d-flex">
+          <div className="toast-body fw-bold">{toastMsg || "No notification"}</div>
+          <button
+            type="button"
+            className="btn-close btn-close-white me-2 m-auto"
+            data-bs-dismiss="toast"
+            aria-label="Close"
+          ></button>
         </div>
       </div>
 

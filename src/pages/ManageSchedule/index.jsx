@@ -46,10 +46,6 @@ function ManageSchedule() {
   const toastNotif = useRef(null);
 
   const isAllFormFilled = Object.keys(form).every((el) => form[el]);
-  console.log("fill", isAllFormFilled);
-  console.log(form);
-
-  console.log(scheduleId);
 
   useEffect(() => {
     getAllMovie();
@@ -135,7 +131,6 @@ function ManageSchedule() {
   };
 
   const setUpdate = (data) => {
-    console.log(data);
     const { id, premiere, price, location, dateStart, dateEnd, time: dataTime } = data;
     setForm({
       ...form,

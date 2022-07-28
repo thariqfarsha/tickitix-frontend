@@ -44,7 +44,6 @@ function MovieDetails() {
 
   const getDataMovie = async () => {
     try {
-      console.log("get data movie");
       const resultDataMovie = await axios.get(`movie/${params.id}`);
       setDataMovie(resultDataMovie.data.data[0]);
     } catch (error) {
@@ -52,11 +51,8 @@ function MovieDetails() {
     }
   };
 
-  console.log(premiereLocation);
-
   const getListSchedule = async () => {
     try {
-      console.log("get list movie");
       const resultListSchedule = await axios.get(
         `schedule?movieId=${params.id}&searchLocation=${premiereLocation}&page=${page}`
       );

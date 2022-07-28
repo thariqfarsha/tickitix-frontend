@@ -44,7 +44,6 @@ function ManageMovie() {
   const toastNotif = useRef(null);
 
   const isAllFormFilled = Object.keys(form).every((el) => form[el]);
-  console.log(isAllFormFilled);
 
   useEffect(() => {
     getDataMovie();
@@ -108,7 +107,6 @@ function ManageMovie() {
   };
 
   const setUpdate = (data) => {
-    console.log(data);
     const { id, name, category, director, cast, releaseDate, duration, synopsis, imagePath } = data;
     setForm({
       ...form,

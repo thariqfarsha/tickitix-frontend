@@ -33,7 +33,6 @@ function Payment() {
   const handlePayment = async () => {
     try {
       const result = await axios.post("booking", formBooking);
-      console.log(result);
       window.location.href = result.data.data.redirectUrl;
     } catch (error) {
       console.log(error);

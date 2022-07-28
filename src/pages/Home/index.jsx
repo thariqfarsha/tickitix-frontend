@@ -31,8 +31,6 @@ function Home() {
     getUpcomingMovie();
   }, [month]);
 
-  console.log("month", month);
-
   const getUpcomingMovie = async () => {
     try {
       dispatch(getDataMovieRedux(page, limit, search, sort, month));

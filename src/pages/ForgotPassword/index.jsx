@@ -35,8 +35,6 @@ export default function ForgotPassword() {
     setIsError(false);
   };
 
-  console.log(formEmail);
-
   return (
     <AuthLayout withStepper activeStep={activeStep}>
       <div className="container px-4 px-lg-5">
